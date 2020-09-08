@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Geostatistics | Home</title>
+    <link>/tag/geostatistics/</link>
+      <atom:link href="/tag/geostatistics/index.xml" rel="self" type="application/rss+xml" />
+    <description>Geostatistics</description>
+    <generator>Source Themes Academic (https://sourcethemes.com/academic/)</generator><language>en-us</language><copyright>©2020</copyright><lastBuildDate>Wed, 02 Sep 2020 00:00:00 +0000</lastBuildDate>
+    <image>
+      <url>/images/icon_hu0b7a4cb9992c9ac0e91bd28ffd38dd00_9727_512x512_fill_lanczos_center_2.png</url>
+      <title>Geostatistics</title>
+      <link>/tag/geostatistics/</link>
+    </image>
+    
+    <item>
+      <title>Spatial modeling and Interpolation</title>
+      <link>/project/spatial-modeling/spatial-modeling-and-interpolation/</link>
+      <pubDate>Wed, 02 Sep 2020 00:00:00 +0000</pubDate>
+      <guid>/project/spatial-modeling/spatial-modeling-and-interpolation/</guid>
+      <description>
+
+
+&lt;p&gt;Currently working on prediction output map. Results to be displayed soon.&lt;/p&gt;
+</description>
+    </item>
+    
+  </channel>
+</rss>

@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Mapping | Home</title>
+    <link>/tag/mapping/</link>
+      <atom:link href="/tag/mapping/index.xml" rel="self" type="application/rss+xml" />
+    <description>Mapping</description>
+    <generator>Source Themes Academic (https://sourcethemes.com/academic/)</generator><language>en-us</language><copyright>©2020</copyright><lastBuildDate>Wed, 02 Sep 2020 00:00:00 +0000</lastBuildDate>
+    <image>
+      <url>/images/icon_hu0b7a4cb9992c9ac0e91bd28ffd38dd00_9727_512x512_fill_lanczos_center_2.png</url>
+      <title>Mapping</title>
+      <link>/tag/mapping/</link>
+    </image>
+    
+    <item>
+      <title>Customers location - Google map</title>
+      <link>/project/customers-location-google-map/</link>
+      <pubDate>Wed, 02 Sep 2020 00:00:00 +0000</pubDate>
+      <guid>/project/customers-location-google-map/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Static Maps</title>
+      <link>/project/static-maps/</link>
+      <pubDate>Tue, 01 Sep 2020 00:00:00 +0000</pubDate>
+      <guid>/project/static-maps/</guid>
+      <description>
+
+
+&lt;p&gt;&lt;strong&gt;Communication using maps&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;A map tells a story. The ultimate goal of any spatial data analysis or research is to communicate the key outputs. Visualization of spatial data inform of maps comes in handy when sharing useful insights that inform critical decision making.&lt;/p&gt;
+&lt;p&gt;Here, I would like to share my experience of spatial data visualization from different data analysis problems.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Regions of interest(ROI)&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;When doing a study/analysis involving a specific area(s) given a broader geographic location, you might be required to display a particular region(s) of interest. This map shows a case of areas of interest at the county level in Kenya from counties shapefile data.&lt;/p&gt;
+&lt;div class=&#34;figure&#34;&gt;
+&lt;img src=&#34;/media/Roi.jpeg&#34; alt=&#34;Figure 1: Regions of Interest&#34; /&gt;
+&lt;p class=&#34;caption&#34;&gt;&lt;em&gt;Figure 1&lt;/em&gt;: Regions of Interest&lt;/p&gt;
+&lt;/div&gt;
+&lt;p&gt;&lt;strong&gt;Parcels distribution within sub-counties&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;Parcels (point features) are distributed within polygon features(sub-counties boundaries). Point features can be schools, shops, hospitals, events occurring, e.t.c. Information on both points and polygons is stored in attributes.&lt;/p&gt;
+&lt;p&gt;The map below shows that parcels are located exclusively in the selected sub-counties. Such information is relevant. It gives insights that can be used for planning purposes or service delivery since we are narrowing down from more comprehensive geographic location(County level) to sub-counties level.&lt;/p&gt;
+&lt;div class=&#34;figure&#34;&gt;
+&lt;img src=&#34;/media/Parcels.jpeg&#34; alt=&#34;Figure 2: Point features distribution&#34; /&gt;
+&lt;p class=&#34;caption&#34;&gt;&lt;em&gt;Figure 2&lt;/em&gt;: Point features distribution&lt;/p&gt;
+&lt;/div&gt;
+&lt;p&gt;&lt;strong&gt;Regional customers purchase segmentation&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;You might want to understand the cumulative customers’ purchase within your customers’ regional coverage. Total sales data can as well be displayed on a map and variations color-coded.&lt;/p&gt;
+&lt;div class=&#34;figure&#34;&gt;
+&lt;img src=&#34;/media/Purchase.jpeg&#34; alt=&#34;Figure 3: Regional customers purchase&#34; /&gt;
+&lt;p class=&#34;caption&#34;&gt;&lt;em&gt;Figure 3&lt;/em&gt;: Regional customers purchase&lt;/p&gt;
+&lt;/div&gt;
+&lt;p&gt;&lt;strong&gt;Humanitarian response to Cyclone Idai in Zimbabwe&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;This map links to my &lt;a href=&#34;https://benmwasambo.shinyapps.io/zimbabwe_cyclone/&#34;&gt;project&lt;/a&gt; about humanitarian organizations’ efforts in response to the devastating cyclone Idai in Zimbabwe in March 2019. An excellent example of a choropleth map showing individuals reached at the district level.&lt;/p&gt;
+&lt;div class=&#34;figure&#34;&gt;
+&lt;img src=&#34;/media/Zimbabwe.jpeg&#34; alt=&#34;Figure 4: Humanitarian response map&#34; /&gt;
+&lt;p class=&#34;caption&#34;&gt;&lt;em&gt;Figure 4&lt;/em&gt;: Humanitarian response map&lt;/p&gt;
+&lt;/div&gt;
+&lt;p&gt;&lt;strong&gt;&lt;em&gt;More maps coming soon….&lt;/em&gt;&lt;/strong&gt;&lt;/p&gt;
+</description>
+    </item>
+    
+  </channel>
+</rss>

@@ -1,0 +1,361 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Posts | Home</title>
+    <link>/post/</link>
+      <atom:link href="/post/index.xml" rel="self" type="application/rss+xml" />
+    <description>Posts</description>
+    <generator>Source Themes Academic (https://sourcethemes.com/academic/)</generator><language>en-us</language><copyright>©2020</copyright><lastBuildDate>Wed, 02 Sep 2020 00:00:00 +0000</lastBuildDate>
+    <image>
+      <url>/images/icon_hu0b7a4cb9992c9ac0e91bd28ffd38dd00_9727_512x512_fill_lanczos_center_2.png</url>
+      <title>Posts</title>
+      <link>/post/</link>
+    </image>
+    
+    <item>
+      <title>Geo-location algorithm</title>
+      <link>/post/geo-location-algorithm/</link>
+      <pubDate>Wed, 02 Sep 2020 00:00:00 +0000</pubDate>
+      <guid>/post/geo-location-algorithm/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Interface between R and Geodatabase(PostGIS)</title>
+      <link>/post/interface-between-r-and-geodatabase-postgis/</link>
+      <pubDate>Wed, 02 Sep 2020 00:00:00 +0000</pubDate>
+      <guid>/post/interface-between-r-and-geodatabase-postgis/</guid>
+      <description>
+
+
+&lt;p&gt;&lt;strong&gt;Minimal data interactions&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;Everyone would want to minimize the hassle of handling data through various channels and lengthy processes; personally, it bothers me. Such an approach may include querying data from the database to our local working directory, then writing a code to import the same dataset to a working environment for further analysis.&lt;/p&gt;
+&lt;p&gt;However, the interface between R and databases provides a seamless way of storing and retrieving spatial data frames the same way we use dbWriteTable() and dbReadTable() calls when working with non-spatial data.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;PostGIS extension&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;PostGIS is a PostgreSQL external extension that provides spatial objects, allowing storage and querying information about location and mapping. Both vector(points, lines, polygons) and raster data are supported in reading and write modes. In most cases, geospatial users will enable this extension when installing PostgreSQL. No worries if you skipped this step. You can write a simple query (CREATE EXTENSION postgis;) on PostgreSQL to allow this extension.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Required packages in R&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;Assuming that you have your SpatialPointDataFrame and SpatialPolygonDataFrame loaded in R, here are the packages necessary to connect to our database. If you don’t have the packages below, install them using install.packages().&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#Packages to get started with database connection. 
+library(DBI)
+library(rpostgis)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Loading required package: RPostgreSQL&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;library(RPostgreSQL)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;Creating a database connection&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;Once the packages are loaded, configure a connection to a geodatabase in R. Note that I renamed my PostGIS database to spatial_projects hence the &lt;em&gt;dbname&lt;/em&gt; as per the code below.&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;conn &amp;lt;- dbConnect(drv = “PostgreSQL”, host = “localhost”, dbname = “spatial_projects”, user = “postgres”, password = “******”)&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Store SpatialPointDataFrame to PostGIS&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;For the relevance of this article, I will use a sample spatialpointDataFrame for soil properties named &lt;strong&gt;&lt;em&gt;po&lt;/em&gt;&lt;/strong&gt; and assign it a new name (&lt;strong&gt;&lt;em&gt;po_data&lt;/em&gt;&lt;/strong&gt;) which will be stored in the connected PostGIS(spatial_projects) database.&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;pgInsert(conn, “po_data”, po, new.id = “Id_1”)&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;The figures below show a query result of the spatialpointDataFrame stored in the database.&lt;/p&gt;
+&lt;div class=&#34;figure&#34;&gt;
+&lt;img src=&#34;/media/postgis.PNG&#34; alt=&#34;Figure 1: SpatialpointDataFrame in PostGIS&#34; /&gt;
+&lt;p class=&#34;caption&#34;&gt;&lt;em&gt;Figure 1&lt;/em&gt;: SpatialpointDataFrame in PostGIS&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class=&#34;figure&#34;&gt;
+&lt;img src=&#34;/media/geom.PNG&#34; alt=&#34;Figure 2: Geometry viewer&#34; /&gt;
+&lt;p class=&#34;caption&#34;&gt;&lt;em&gt;Figure 2&lt;/em&gt;: Geometry viewer&lt;/p&gt;
+&lt;/div&gt;
+&lt;p&gt;&lt;strong&gt;Retrieve Spatial Data From PostGIS to R&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;In cases where the data is stored in a geodatabase, you need to import it directly to R for spatial analysis. If the connection was altered, you might need to initiate a new database connection before writing this code;&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;db_data &amp;lt;- pgGetGeom(conn, “po_data”)&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;&lt;em&gt;Happy coding!!&lt;/em&gt;&lt;/strong&gt;😄 😄&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>MtiCalc, the app that helps farmers bargain for their woodlot prices. </title>
+      <link>/post/mticalc-the-app-that-helps-farmers-bargain-for-their-woodlot-prices/</link>
+      <pubDate>Wed, 02 Sep 2020 00:00:00 +0000</pubDate>
+      <guid>/post/mticalc-the-app-that-helps-farmers-bargain-for-their-woodlot-prices/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Time series market Price analysis for different agricultural commodities in Kenya</title>
+      <link>/post/time-series-market-price-analysis-for-different-commodities-in-kenya/</link>
+      <pubDate>Wed, 02 Sep 2020 00:00:00 +0000</pubDate>
+      <guid>/post/time-series-market-price-analysis-for-different-commodities-in-kenya/</guid>
+      <description>
+
+
+&lt;p&gt;The selling of agricultural produce to consumers is one of the crucial stages in the agricultural value chain. However, the chain actors; producers(farmers), traders, and consumers may lack sufficient information about prevailing and historical regional market prices.&lt;/p&gt;
+&lt;p&gt;This analysis shows trends for agricultural commodities prices in different regions from January 2018 to April 2020. Daily data was downloaded from &lt;a href=&#34;http://www.nafis.go.ke/category/market-info/&#34;&gt;NAFIS&lt;/a&gt; website. Many thanks to &lt;a href=&#34;https://www.linkedin.com/in/perisbosire/&#34;&gt;Peris Bosire&lt;/a&gt; for conducting extensive market data research and advising on these datasets’ usage.&lt;/p&gt;
+&lt;p&gt;Averages for monthly market prices in each region were used to analyze the trends. Rigorous cleaning of the data, which includes merging daily data files, was done, and the final ‘clean data’ was used for this analysis. However, a gap in data acquisition was observed from December 2018 to April 2020.&lt;/p&gt;
+&lt;p&gt;Only a few regions and commodities(with sufficient data) were selected for this analysis.&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;One caveat: Imputation of row means was done for commodities with missing price values.&lt;/em&gt;&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;RM = rowMeans(clean_data[, 6:26], na.rm = TRUE)
+
+#Missing row values for Nairobi
+
+clean_data$Nairobi[is.na(clean_data$Nairobi)] = RM[is.na(clean_data$Nairobi)]&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Data acquisation dates were also converted to Month-Year.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;library(lubridate)
+clean_data$Date &amp;lt;- as.Date(clean_data$Date, format = &amp;quot;%Y-%m-%d&amp;quot;)
+clean_data$Month &amp;lt;- format(as.Date(clean_data$Date), &amp;quot;%b - %Y&amp;quot;)
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;clean_data$Month &amp;lt;- factor(clean_data$Month,
+                        levels = c(&amp;quot;Jan - 2018&amp;quot;, &amp;quot;Feb - 2018&amp;quot;, &amp;quot;Mar - 2018&amp;quot;, &amp;quot;Apr - 2018&amp;quot;, &amp;quot;May - 2018&amp;quot;, &amp;quot;Jun - 2018&amp;quot;,
+                                   &amp;quot;Jul - 2018&amp;quot;, &amp;quot;Aug - 2018&amp;quot;, &amp;quot;Sep - 2018&amp;quot;, &amp;quot;Oct - 2018&amp;quot;, &amp;quot;Nov - 2018&amp;quot;,
+                                   &amp;quot;Jan - 2019&amp;quot;,&amp;quot;Mar - 2019&amp;quot;, &amp;quot;Apr - 2019&amp;quot;, &amp;quot;May - 2019&amp;quot;,&amp;quot;Aug - 2019&amp;quot;, &amp;quot;Feb - 2020&amp;quot;,
+                                   &amp;quot;Mar - 2020&amp;quot;, &amp;quot;Apr - 2020&amp;quot;))&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;A glimpse of the data used for analysis&lt;/strong&gt;&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#show sample dataset used for analysis
+library(dplyr)
+library(knitr)
+summary &amp;lt;- clean_data[, 1:8] %&amp;gt;% 
+  head(6)
+summary %&amp;gt;% 
+  kable(&amp;quot;html&amp;quot;, caption = &amp;#39;A summary of the dataset&amp;#39;)&lt;/code&gt;&lt;/pre&gt;
+&lt;table&gt;
+&lt;caption&gt;
+&lt;span id=&#34;tab:unnamed-chunk-6&#34;&gt;Table 1: &lt;/span&gt;A summary of the dataset
+&lt;/caption&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th style=&#34;text-align:left;&#34;&gt;
+Month
+&lt;/th&gt;
+&lt;th style=&#34;text-align:left;&#34;&gt;
+Commodity
+&lt;/th&gt;
+&lt;th style=&#34;text-align:right;&#34;&gt;
+Nairobi
+&lt;/th&gt;
+&lt;th style=&#34;text-align:right;&#34;&gt;
+Mombasa
+&lt;/th&gt;
+&lt;th style=&#34;text-align:right;&#34;&gt;
+Kisumu
+&lt;/th&gt;
+&lt;th style=&#34;text-align:right;&#34;&gt;
+Nakuru
+&lt;/th&gt;
+&lt;th style=&#34;text-align:right;&#34;&gt;
+Eldoret
+&lt;/th&gt;
+&lt;th style=&#34;text-align:right;&#34;&gt;
+Kisii
+&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+Apr - 2018
+&lt;/td&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+Avocado
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+2300
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+3500
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+1800
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+2185
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+2314
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+1637
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+Apr - 2018
+&lt;/td&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+Beans Canadian
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+7200
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+7106
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+8342
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+7200
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+7106
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+7106
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+Apr - 2018
+&lt;/td&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+Beans Mwitemania
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+6750
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+5564
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+6429
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+5500
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+8100
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+6429
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+Apr - 2018
+&lt;/td&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+Cabbages
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+1660
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+2717
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+1250
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+1071
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+1564
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+1534
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+Apr - 2018
+&lt;/td&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+Dry Maize
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+2800
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+2535
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+3514
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+2500
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+2392
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+2685
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+Apr - 2018
+&lt;/td&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+Eggs
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+324
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+330
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+330
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+300
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+333
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+325
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;&lt;strong&gt;1.Market prices for commodities sold in Nairobi&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;The majority of the commodities have shown a one-year steady price decrease (from January 2018 to January 2019), followed by a tremendous upward shift in prices between January and August 2019. Relatively constant prices were recorded in the first four months of 2020. Tomatoes had variations in prices across the analysis period, with the highest price recorded in June 2018, at KSh. 7,000 per box(64Kg).&lt;/p&gt;
+&lt;p&gt;When the price of green maize was comparatively high, a dry maize bag was sold at a lower price and vice versa. The two varieties of beans have a uniform trend where a bag of beans canadian was sold at a higher price throughout the seasons.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#plot for Nairobi
+
+library(ggplot2)
+library(knitr)
+library(dplyr)
+
+Nairobi &amp;lt;-  ggplot(clean_data, aes(x= Month, y=Nairobi, group=Commodity)) +
+  geom_line(aes(color=Commodity))+
+  geom_point(aes(color=Commodity))+ ylab(&amp;quot;Market prices (KSh)&amp;quot;)+
+  xlab(&amp;quot;Month-Year&amp;quot;)+theme(axis.text.x = element_text( size=8, angle=60, color=&amp;quot;black&amp;quot;))+
+  ggtitle(&amp;quot;Time series monthly averaged market prices for selected commodities in Nairobi&amp;quot;)+
+  theme(plot.title = element_text( colour = &amp;quot;#663300&amp;quot;))+
+  scale_y_continuous(labels = label_comma(big.mark = &amp;quot;,&amp;quot;))+
+  theme(legend.position=&amp;quot;top&amp;quot;)
+
+Nairobi&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;/post/market-analysis/index_files/figure-html/unnamed-chunk-7-1.png&#34; width=&#34;100%&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;2.Market prices for commodities sold in Mombasa&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;Prices for commodities in Mombasa appeared to be highest compared to other towns. All commodities
+except eggs were sold at more than KSh.2,000 per unit. The prices of green maize were significantly higher
+compared to dry maize. A bag of dry maize was sold at a lower cost compared to other commodities
+throughout the months. However, &lt;strong&gt;Avocados&lt;/strong&gt; recorded the highest prices in Mombasa compared to other
+towns; a bag was sold above KSh. 3,500 in all Months.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;/post/market-analysis/index_files/figure-html/unnamed-chunk-8-1.png&#34; width=&#34;100%&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;3.Market prices for commodities sold in Kisumu&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;A bag of dry maize was sold at a slightly higher cost than that of green maize throughout the seasons
+in Kisumu. This shows a unique trend compared to other towns, where a bag of green maize was sold at
+higher prices than that of dry maize. Tomatoes were also sold at comparatively higher prices, recording up to
+KSh.10,000 per box in April 2019.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;/post/market-analysis/index_files/figure-html/unnamed-chunk-9-1.png&#34; width=&#34;100%&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;4.Market prices for commodities sold in Nakuru&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;A bag of cabbages (126Kg)was sold at the lowest prices in Nakuru- as low as KSh.800 compared to other
+towns.
+&lt;img src=&#34;/post/market-analysis/index_files/figure-html/unnamed-chunk-10-1.png&#34; width=&#34;100%&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;5.Market prices for commodities sold in Eldoret&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;A unique trend was observed in Eldoret, where the cost of beans Mwitemania variety was higher compared
+to that of beans Canadian across all months except July 2018. The highest recorded price of tomatoes per box
+(64Kg box)was observed in June 2018 at KSh.11,142.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;/post/market-analysis/index_files/figure-html/unnamed-chunk-11-1.png&#34; width=&#34;100%&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;5.Market prices for commodities sold in Kisii&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;/post/market-analysis/index_files/figure-html/unnamed-chunk-12-1.png&#34; width=&#34;100%&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;6.Market prices for commodities sold in Kitale&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;/post/market-analysis/index_files/figure-html/unnamed-chunk-13-1.png&#34; width=&#34;100%&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;7.Market prices for commodities sold in Isiolo&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;/post/market-analysis/index_files/figure-html/unnamed-chunk-14-1.png&#34; width=&#34;100%&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Summary&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;The trend analysis shows different commodities’ prices behavior in various towns throughout the analysis period in a nutshell. There is a clear distinction in the recorded commodities; the following top 3 items were sold at more than KSh.3,000 per unit.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Beans Canadian&lt;/li&gt;
+&lt;li&gt;Beans Mwitemania&lt;/li&gt;
+&lt;li&gt;Tomatoes&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;There was an overall tomato price spike in June 2018 in all towns. The average prices ranged from
+7,000-11,142 (KSh.) per box sold.&lt;/p&gt;
+</description>
+    </item>
+    
+  </channel>
+</rss>

@@ -1,0 +1,333 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+  xmlns:xhtml="http://www.w3.org/1999/xhtml">
+  
+  <url>
+    <loc>/courses/example/example1/</loc>
+    <lastmod>2019-05-05T00:00:00+01:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>/courses/example/</loc>
+    <lastmod>2018-09-09T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>/courses/example/example2/</loc>
+    <lastmod>2019-05-05T00:00:00+01:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>/talk/example/</loc>
+    <lastmod>2030-06-01T13:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>/</loc>
+    <lastmod>2030-06-01T13:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>/talk/</loc>
+    <lastmod>2030-06-01T13:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>/publication-type/0/</loc>
+    <lastmod>2020-09-03T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>/authors/</loc>
+    <lastmod>2020-09-03T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>/author/benjamin-mwasambo/</loc>
+    <lastmod>2020-09-03T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>/categories/</loc>
+    <lastmod>2020-09-03T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>/publication/effects-of-human-encroachment-and-eviction-to-embobut-forest-using-time-series-landsat-data-and-machine-learning/</loc>
+    <lastmod>2020-09-03T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>/tag/gis/</loc>
+    <lastmod>2020-09-03T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>/tag/machine-learning/</loc>
+    <lastmod>2020-09-03T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>/publication_types/</loc>
+    <lastmod>2020-09-03T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>/publication/</loc>
+    <lastmod>2020-09-03T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>/tag/remote-sensing/</loc>
+    <lastmod>2020-09-03T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>/category/remote-sensing/</loc>
+    <lastmod>2020-09-03T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>/tag/research/</loc>
+    <lastmod>2020-09-03T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>/tags/</loc>
+    <lastmod>2020-09-03T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>/tag/algorithm/</loc>
+    <lastmod>2020-09-02T15:33:39+03:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>/tag/communication/</loc>
+    <lastmod>2020-09-02T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>/project/crop-monitoring-using-earth-observation-data/</loc>
+    <lastmod>2020-09-02T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>/project/customers-location-google-map/</loc>
+    <lastmod>2020-09-02T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>/tag/data-analysis/</loc>
+    <lastmod>2020-09-02T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>/tag/data-visualization/</loc>
+    <lastmod>2020-09-02T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>/category/database/</loc>
+    <lastmod>2020-09-02T16:26:50+03:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>/author/european-space-agency/</loc>
+    <lastmod>2020-09-02T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>/author/farmdrive/</loc>
+    <lastmod>2020-09-02T15:33:39+03:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>/tag/forestry/</loc>
+    <lastmod>2020-09-02T16:06:00+03:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>/post/geo-location-algorithm/</loc>
+    <lastmod>2020-09-02T15:33:39+03:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>/tag/geodb/</loc>
+    <lastmod>2020-09-02T16:26:50+03:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>/tag/geostatistics/</loc>
+    <lastmod>2020-09-02T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>/category/gis/</loc>
+    <lastmod>2020-09-02T15:33:39+03:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>/tag/google-maps/</loc>
+    <lastmod>2020-09-02T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>/tag/insights/</loc>
+    <lastmod>2020-09-02T15:21:04+03:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>/project/insights-from-loan-portfolio-analysis-for-a-fintech-loan-product/</loc>
+    <lastmod>2020-09-02T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>/project/interactive-web-map-with-leaflet-and-shiny-in-r/</loc>
+    <lastmod>2020-09-02T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>/post/interface-between-r-and-geodatabase-postgis/</loc>
+    <lastmod>2020-09-02T16:26:50+03:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>/tag/leaflet/</loc>
+    <lastmod>2020-09-02T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>/project/loan-dashboard/loan-portifolio-analysis-dashboard/</loc>
+    <lastmod>2020-09-02T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>/tag/mapping/</loc>
+    <lastmod>2020-09-02T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>/tag/market-analysis/</loc>
+    <lastmod>2020-09-02T15:21:04+03:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>/post/mticalc-the-app-that-helps-farmers-bargain-for-their-woodlot-prices/</loc>
+    <lastmod>2020-09-02T16:06:00+03:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>/tag/postgresql/</loc>
+    <lastmod>2020-09-02T16:26:50+03:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>/post/</loc>
+    <lastmod>2020-09-02T16:26:50+03:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>/project/</loc>
+    <lastmod>2020-09-02T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>/tag/r/</loc>
+    <lastmod>2020-09-02T16:26:50+03:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>/category/r/</loc>
+    <lastmod>2020-09-02T16:26:50+03:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>/tag/shiny/</loc>
+    <lastmod>2020-09-02T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>/tag/shinydashboard/</loc>
+    <lastmod>2020-09-02T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>/tag/spatial-analysis/</loc>
+    <lastmod>2020-09-02T15:33:39+03:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>/project/spatial-modeling/spatial-modeling-and-interpolation/</loc>
+    <lastmod>2020-09-02T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>/author/standard-media/</loc>
+    <lastmod>2020-09-02T16:06:00+03:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>/tag/time-series-analysis/</loc>
+    <lastmod>2020-09-02T15:21:04+03:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>/post/time-series-market-price-analysis-for-different-commodities-in-kenya/</loc>
+    <lastmod>2020-09-02T15:21:04+03:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>/tag/web-mapping/</loc>
+    <lastmod>2020-09-02T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>/tag/arcgis/</loc>
+    <lastmod>2020-09-01T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>/project/humanitarian-response-to-cyclone-idai-in-zimbabwe/</loc>
+    <lastmod>2020-09-01T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>/project/static-maps/</loc>
+    <lastmod>2020-09-01T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>/courses/</loc>
+    <lastmod>2019-05-05T00:00:00+01:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>/slides/</loc>
+    <lastmod>2019-02-05T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>/slides/example/</loc>
+    <lastmod>2019-02-05T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>/privacy/</loc>
+    <lastmod>2018-06-28T00:00:00+01:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>/terms/</loc>
+    <lastmod>2018-06-28T00:00:00+01:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>/author/benjamin-mwasambo/</loc>
+  </url>
+  
+  <url>
+    <loc>/author/%E5%90%B3%E6%81%A9%E9%81%94/</loc>
+  </url>
+  
+</urlset>

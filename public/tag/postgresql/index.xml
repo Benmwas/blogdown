@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>PostgreSQL | Home</title>
+    <link>/tag/postgresql/</link>
+      <atom:link href="/tag/postgresql/index.xml" rel="self" type="application/rss+xml" />
+    <description>PostgreSQL</description>
+    <generator>Source Themes Academic (https://sourcethemes.com/academic/)</generator><language>en-us</language><copyright>©2020</copyright><lastBuildDate>Wed, 02 Sep 2020 00:00:00 +0000</lastBuildDate>
+    <image>
+      <url>/images/icon_hu0b7a4cb9992c9ac0e91bd28ffd38dd00_9727_512x512_fill_lanczos_center_2.png</url>
+      <title>PostgreSQL</title>
+      <link>/tag/postgresql/</link>
+    </image>
+    
+    <item>
+      <title>Interface between R and Geodatabase(PostGIS)</title>
+      <link>/post/interface-between-r-and-geodatabase-postgis/</link>
+      <pubDate>Wed, 02 Sep 2020 00:00:00 +0000</pubDate>
+      <guid>/post/interface-between-r-and-geodatabase-postgis/</guid>
+      <description>
+
+
+&lt;p&gt;&lt;strong&gt;Minimal data interactions&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;Everyone would want to minimize the hassle of handling data through various channels and lengthy processes; personally, it bothers me. Such an approach may include querying data from the database to our local working directory, then writing a code to import the same dataset to a working environment for further analysis.&lt;/p&gt;
+&lt;p&gt;However, the interface between R and databases provides a seamless way of storing and retrieving spatial data frames the same way we use dbWriteTable() and dbReadTable() calls when working with non-spatial data.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;PostGIS extension&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;PostGIS is a PostgreSQL external extension that provides spatial objects, allowing storage and querying information about location and mapping. Both vector(points, lines, polygons) and raster data are supported in reading and write modes. In most cases, geospatial users will enable this extension when installing PostgreSQL. No worries if you skipped this step. You can write a simple query (CREATE EXTENSION postgis;) on PostgreSQL to allow this extension.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Required packages in R&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;Assuming that you have your SpatialPointDataFrame and SpatialPolygonDataFrame loaded in R, here are the packages necessary to connect to our database. If you don’t have the packages below, install them using install.packages().&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#Packages to get started with database connection. 
+library(DBI)
+library(rpostgis)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Loading required package: RPostgreSQL&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;library(RPostgreSQL)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;Creating a database connection&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;Once the packages are loaded, configure a connection to a geodatabase in R. Note that I renamed my PostGIS database to spatial_projects hence the &lt;em&gt;dbname&lt;/em&gt; as per the code below.&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;conn &amp;lt;- dbConnect(drv = “PostgreSQL”, host = “localhost”, dbname = “spatial_projects”, user = “postgres”, password = “******”)&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Store SpatialPointDataFrame to PostGIS&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;For the relevance of this article, I will use a sample spatialpointDataFrame for soil properties named &lt;strong&gt;&lt;em&gt;po&lt;/em&gt;&lt;/strong&gt; and assign it a new name (&lt;strong&gt;&lt;em&gt;po_data&lt;/em&gt;&lt;/strong&gt;) which will be stored in the connected PostGIS(spatial_projects) database.&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;pgInsert(conn, “po_data”, po, new.id = “Id_1”)&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;The figures below show a query result of the spatialpointDataFrame stored in the database.&lt;/p&gt;
+&lt;div class=&#34;figure&#34;&gt;
+&lt;img src=&#34;/media/postgis.PNG&#34; alt=&#34;Figure 1: SpatialpointDataFrame in PostGIS&#34; /&gt;
+&lt;p class=&#34;caption&#34;&gt;&lt;em&gt;Figure 1&lt;/em&gt;: SpatialpointDataFrame in PostGIS&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class=&#34;figure&#34;&gt;
+&lt;img src=&#34;/media/geom.PNG&#34; alt=&#34;Figure 2: Geometry viewer&#34; /&gt;
+&lt;p class=&#34;caption&#34;&gt;&lt;em&gt;Figure 2&lt;/em&gt;: Geometry viewer&lt;/p&gt;
+&lt;/div&gt;
+&lt;p&gt;&lt;strong&gt;Retrieve Spatial Data From PostGIS to R&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;In cases where the data is stored in a geodatabase, you need to import it directly to R for spatial analysis. If the connection was altered, you might need to initiate a new database connection before writing this code;&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;db_data &amp;lt;- pgGetGeom(conn, “po_data”)&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;&lt;em&gt;Happy coding!!&lt;/em&gt;&lt;/strong&gt;😄 😄&lt;/p&gt;
+</description>
+    </item>
+    
+  </channel>
+</rss>

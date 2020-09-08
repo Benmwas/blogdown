@@ -1,0 +1,351 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Data visualization | Home</title>
+    <link>/tag/data-visualization/</link>
+      <atom:link href="/tag/data-visualization/index.xml" rel="self" type="application/rss+xml" />
+    <description>Data visualization</description>
+    <generator>Source Themes Academic (https://sourcethemes.com/academic/)</generator><language>en-us</language><copyright>©2020</copyright><lastBuildDate>Wed, 02 Sep 2020 00:00:00 +0000</lastBuildDate>
+    <image>
+      <url>/images/icon_hu0b7a4cb9992c9ac0e91bd28ffd38dd00_9727_512x512_fill_lanczos_center_2.png</url>
+      <title>Data visualization</title>
+      <link>/tag/data-visualization/</link>
+    </image>
+    
+    <item>
+      <title>Customers location - Google map</title>
+      <link>/project/customers-location-google-map/</link>
+      <pubDate>Wed, 02 Sep 2020 00:00:00 +0000</pubDate>
+      <guid>/project/customers-location-google-map/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Insights from Loan portfolio analysis for a FinTech loan product</title>
+      <link>/project/insights-from-loan-portfolio-analysis-for-a-fintech-loan-product/</link>
+      <pubDate>Wed, 02 Sep 2020 00:00:00 +0000</pubDate>
+      <guid>/project/insights-from-loan-portfolio-analysis-for-a-fintech-loan-product/</guid>
+      <description>
+
+
+&lt;p&gt;Depending on business Key performance indicators, metrics that drive decisions can be obtained from loan data variables. Some of the key metrics include, but are not limited to, expected return, return rate, loan repayment ratio, actual returns/repayment, total amount overdue.&lt;/p&gt;
+&lt;p&gt;Overall, loan portfolio analysis is required when determining the ‘health’ of business. Accurate analysis of loan data will help make critical decisions that will support other departments’ operations, such as collections and customer support, and marketing.&lt;/p&gt;
+&lt;p&gt;This project entails an in-depth analysis of a fintech case loan product; datasets were obtained from a public domain. Given the dataset, different problems were addressed, and insights were obtained through analysis from the data.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Problems&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;To understand from the data, the order at which subsequent customers purchased more than one product.&lt;/li&gt;
+&lt;li&gt;Draw a pattern between the age of customers and products purchased.&lt;/li&gt;
+&lt;li&gt;Repayment behavior measured with Timely Repayment Percentage (TRP) and the choice of product bought.&lt;/li&gt;
+&lt;li&gt;Pattern between gender and choice of product bought.&lt;/li&gt;
+&lt;li&gt;Length/number of days it takes for customers to fully repay their loans, addressing distribution and differences between the products.&lt;/li&gt;
+&lt;li&gt;Given the products’ historical demand and repayment pattern, which one would you push for and why?&lt;/li&gt;
+&lt;li&gt;The products demand trends over time.&lt;/li&gt;
+&lt;li&gt;Which day(s) of the week has the highest loan repayment.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#load required packages
+library(readxl)
+library(dplyr)
+library(tidyr)
+library(lubridate)
+library(ggplot2)
+library(scales)
+library(knitr)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#Read data
+
+data &amp;lt;- read_excel(&amp;quot;loan_data.xlsx&amp;quot;)
+
+data&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;1.Order of products purchase by subsequent clients.&lt;/strong&gt;&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#Filter for only subsquent products, cycle greater than 1
+summary &amp;lt;- data %&amp;gt;% 
+  filter(Cycle &amp;gt; 1) %&amp;gt;% 
+ select(Product,`Disbursed Date`,Cycle)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;plot_data &amp;lt;- summary %&amp;gt;% 
+  group_by(Product, Cycle) %&amp;gt;% 
+  summarise(count = n())
+
+plot_data&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;In an analysis based on subsequent(repeat) customers, cycle 2 has the highest product demand. There was a
+high demand for BORA, LPG2, and CNVS in this cycle. BORA had a high number of purchases in cycle 2,
+then CNVS in cycle 3 and LPG2 in cycle 4. However, the difference is minimal, with an increase in number
+of cycles.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;/project/portifolio-analysis/index_files/figure-html/unnamed-chunk-9-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;1.1 Displaying distribution for top products&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;For better visualization and clarity of the pattern, top products were filtered from the grouped product and
+cycles dataset.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;Top_pdct &amp;lt;- plot_data %&amp;gt;% 
+  filter(Product==&amp;quot;BORA&amp;quot; | Product==&amp;quot;LPG2&amp;quot; | Product==&amp;quot;CNVS&amp;quot; | Product==&amp;quot;P400&amp;quot; | Product==&amp;quot;BOOM&amp;quot;)
+#display top rows and colums
+head(Top_pdct)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## # A tibble: 6 x 3
+## # Groups:   Product [1]
+##   Product Cycle count
+##   &amp;lt;chr&amp;gt;   &amp;lt;dbl&amp;gt; &amp;lt;int&amp;gt;
+## 1 BOOM        2   246
+## 2 BOOM        3    47
+## 3 BOOM        4    12
+## 4 BOOM        5     4
+## 5 BOOM        6     2
+## 6 BOOM        7     1&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;/project/portifolio-analysis/index_files/figure-html/unnamed-chunk-11-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;2.Relationships between age and product purchased&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;The Percentage age for each age group was computed from the sum of all purchases within the group.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;Age_plot &amp;lt;- Age %&amp;gt;% 
+  group_by(Age, Product) %&amp;gt;% 
+  summarise(count = n())
+
+#Percentage of product purchace per age
+Percentage &amp;lt;- group_by(Age_plot, Age) %&amp;gt;% 
+  mutate(Percent = (count/sum(count))*100)
+
+Percentage[,4] &amp;lt;- round(Percentage[,4], digits = 2)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#display top rows and columns
+head(Percentage)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## # A tibble: 6 x 4
+## # Groups:   Age [1]
+##     Age Product count Percent
+##   &amp;lt;dbl&amp;gt; &amp;lt;chr&amp;gt;   &amp;lt;int&amp;gt;   &amp;lt;dbl&amp;gt;
+## 1    18 B00M        1    6.67
+## 2    18 BORA        2   13.3 
+## 3    18 CNVS        1    6.67
+## 4    18 LPG2        7   46.7 
+## 5    18 LPG3        2   13.3 
+## 6    18 P400        1    6.67&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;This data was used to show relationships between age and purchase of all products. The trend shows high age and products’ correlations in LPG2 and CNVS. There was a high demand for LPG2 between 18 and 50 years and a diminished demand in the age above 50 years with a less than 25% of the products purchased. On the other hand, CNVS was highly demanded by older age as compared to a younger age class. A pattern was observed in age, and this product demand; product demand increased with age.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;/project/portifolio-analysis/index_files/figure-html/unnamed-chunk-17-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;2.1 Age-products analysis for top demanded products&lt;/strong&gt;&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;Top_Percent &amp;lt;- Percentage %&amp;gt;%
+filter(Product==&amp;quot;CNVS&amp;quot; | Product==&amp;quot;LPG2&amp;quot; | Product==&amp;quot;LPG3&amp;quot; | Product==&amp;quot;BORA&amp;quot; | Product==&amp;quot;P400&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;The trend line graph below explains in detail the relationship between age and products, as described above.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;/project/portifolio-analysis/index_files/figure-html/unnamed-chunk-20-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;3. Repayment behaviour as measured with Timely Repayment Percentage(TRP) and choice of product bought&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;Average TRP for all products was used in this analysis.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;TRP_summary &amp;lt;- group_by(TRP_clean, Product) %&amp;gt;%
+summarise(mean(TRP)*100)
+names(TRP_summary) &amp;lt;- c(&amp;quot;Product&amp;quot;, &amp;quot;Average_TRP&amp;quot;)
+TRP_summary[,2] &amp;lt;- round(TRP_summary[,2], digits = 2)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;head(TRP_summary)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## # A tibble: 6 x 2
+##   Product Average_TRP
+##   &amp;lt;chr&amp;gt;         &amp;lt;dbl&amp;gt;
+## 1 B00M           47.8
+## 2 BOOM           49.2
+## 3 BORA           60.4
+## 4 CNVS           59.8
+## 5 COOK           55.9
+## 6 CVS2           67.1&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Different products have a different measure of timely installment repayment ranging from 23.52% to 75.33%.In this case, the pattern shows SILOS and KUNI were more timely repaid compared to other products while MKRT had a low repayment frequency. 54% of the products (12/22) have a TRP of more than 50%.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;/project/portifolio-analysis/index_files/figure-html/unnamed-chunk-25-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;4.Correlation/pattern between gender and choice of product bought&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;Percentage of gender to a specific product purchase was computed and used to derive the relationships between gender and products bought.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#create a gender dataset and add a percentage of gender purchase column
+Gender_data &amp;lt;- data %&amp;gt;% 
+   group_by(Gender, Product) %&amp;gt;% 
+   summarize(count = n())
+ 
+ Gender_summary &amp;lt;- group_by(Gender_data, Gender) %&amp;gt;% 
+   mutate(Percentage_gender =  (count/sum(count))*100)
+ Gender_summary[,4] &amp;lt;- round(Gender_summary[,4], digits = 1)
+
+ #Generate a plot dataset and position bar labels 
+ Gender_plot &amp;lt;- Gender_summary %&amp;gt;% 
+   group_by(Product) %&amp;gt;% 
+   arrange(Product, desc(Gender)) %&amp;gt;% 
+   mutate(lab_ypos = cumsum(Percentage_gender)- 0.5 * Percentage_gender)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;The analysis shows most females dominated the products’ choice. However, four products: &lt;strong&gt;LPG2&lt;/strong&gt;, &lt;strong&gt;LPG3&lt;/strong&gt;, &lt;strong&gt;SKH+&lt;/strong&gt; and, &lt;strong&gt;BOOM&lt;/strong&gt; were highly preferred by &lt;strong&gt;male&lt;/strong&gt;.
+&lt;img src=&#34;/project/portifolio-analysis/index_files/figure-html/unnamed-chunk-28-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;5. Repayment length and distribution for full loan repayments&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;Full loan repayments here means: TRP = 100% and status = closed.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#Repayment data
+ Repayments &amp;lt;- data %&amp;gt;% 
+     select(Product,`Disbursed Date`,Status,`Final Payment Date`, TRP) %&amp;gt;% 
+     filter(Status == &amp;quot;Closed&amp;quot; &amp;amp; TRP == 1.000)
+
+Repayments$`Disbursed Date` &amp;lt;- as.Date(Repayments$`Disbursed Date`, format =&amp;quot;%Y-%m-%d&amp;quot;)  
+ Repayments$`Final Payment Date` &amp;lt;- as.Date(Repayments$`Final Payment Date`, format = &amp;quot;%Y-%m-%d&amp;quot;) 
+ 
+ #Add days column
+ Repayments &amp;lt;-  mutate(Repayments, Days = as.numeric(`Final Payment Date` - `Disbursed Date`))
+ #dispaly top rows and columns
+head(Repayments)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## # A tibble: 6 x 6
+##   Product `Disbursed Date` Status `Final Payment Date`   TRP  Days
+##   &amp;lt;chr&amp;gt;   &amp;lt;date&amp;gt;           &amp;lt;chr&amp;gt;  &amp;lt;date&amp;gt;               &amp;lt;dbl&amp;gt; &amp;lt;dbl&amp;gt;
+## 1 BORA    2019-01-09       Closed 2019-03-12               1    62
+## 2 BORA    2019-01-09       Closed 2019-08-01               1   204
+## 3 BORA    2019-01-09       Closed 2019-06-08               1   150
+## 4 LPG2    2019-01-09       Closed 2019-05-01               1   112
+## 5 LPG2    2019-01-09       Closed 2019-04-29               1   110
+## 6 LPG2    2019-01-09       Closed 2019-05-06               1   117&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Most loans took around &lt;strong&gt;110-120 days&lt;/strong&gt; to be repaid fully.&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;/project/portifolio-analysis/index_files/figure-html/unnamed-chunk-32-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;5.1 Distribution of timely full repaid loans per product.&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;To accurately know how long it took one product loan to be fully repaid and avoid bias, the mean of the days it took the products to be repaid was computed.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#Compute mean of products per group
+mean_Repayment &amp;lt;- group_by(Repayments, Product) %&amp;gt;% 
+   mutate(Mean_days = mean(Days))
+  mean_Repayment[, 7] &amp;lt;- trunc(mean_Repayment[, 7])
+  
+#dispaly top rows and columns
+head(mean_Repayment)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## # A tibble: 6 x 7
+## # Groups:   Product [2]
+##   Product `Disbursed Date` Status `Final Payment Date`   TRP  Days Mean_days
+##   &amp;lt;chr&amp;gt;   &amp;lt;date&amp;gt;           &amp;lt;chr&amp;gt;  &amp;lt;date&amp;gt;               &amp;lt;dbl&amp;gt; &amp;lt;dbl&amp;gt;     &amp;lt;dbl&amp;gt;
+## 1 BORA    2019-01-09       Closed 2019-03-12               1    62       175
+## 2 BORA    2019-01-09       Closed 2019-08-01               1   204       175
+## 3 BORA    2019-01-09       Closed 2019-06-08               1   150       175
+## 4 LPG2    2019-01-09       Closed 2019-05-01               1   112       110
+## 5 LPG2    2019-01-09       Closed 2019-04-29               1   110       110
+## 6 LPG2    2019-01-09       Closed 2019-05-06               1   117       110&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;CNVS, COOK, CVS2, KUNI, LPG2, MKRT, and P400 were among the products with less timely repayment days(less than 120 days).
+&lt;img src=&#34;/project/portifolio-analysis/index_files/figure-html/unnamed-chunk-36-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;6.Historical demand and repayment behavior&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Question:&lt;/strong&gt; Which product would you push, and why?
+To better understand all products’ repayment behavior, the percentage of each product loan status was analyzed.For instance, if a loan product has a high rate of arrears and write-offs (Overdue and written off status) and a very low percentage of closed loans, this should be considered ‘bad’ or poorly performing. Hence, a call for better collection strategies, the right customers’ target for the product or even seasonal consideration and, geographic distribution.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;Demand &amp;lt;- data %&amp;gt;% 
+    group_by(Product,Status) %&amp;gt;% 
+    summarise(count = n()/20)
+  
+  Demand_plot &amp;lt;- group_by(Demand, Product) %&amp;gt;% 
+    mutate(Percentage = (count/sum(count))*100)
+  
+  Demand_plot[,4] &amp;lt;- round(Demand_plot[,4], digits = 1)
+  
+  Demand_plot_plotII &amp;lt;- Demand_plot %&amp;gt;% 
+    group_by(Product) %&amp;gt;% 
+    arrange(Product, desc(Status)) %&amp;gt;% 
+    mutate(lab_ypos = cumsum(Percentage)- 0.5 * Percentage)
+  options(scipen = 999)
+  
+  #display top rows and columns
+head(Demand_plot_plotII)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## # A tibble: 6 x 5
+## # Groups:   Product [2]
+##   Product Status      count Percentage lab_ypos
+##   &amp;lt;chr&amp;gt;   &amp;lt;chr&amp;gt;       &amp;lt;dbl&amp;gt;      &amp;lt;dbl&amp;gt;    &amp;lt;dbl&amp;gt;
+## 1 B00M    Written Off  0.05        0.3     0.15
+## 2 B00M    Overdue      4.2        23.7    12.2 
+## 3 B00M    Closed      10.2        57.3    52.6 
+## 4 B00M    Active       3.3        18.6    90.6 
+## 5 BOOM    Written Off  1.5         2.5     1.25
+## 6 BOOM    Overdue     11.4        19.1    12.0&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;The graph below shows a combination of demand and product performance. The maroon line graph shows how the product was demanded, and the scale was reduced by 20 units(n/20). LPG2, LPG3, and BORA were highly demanded consecutively.
+&lt;img src=&#34;/project/portifolio-analysis/index_files/figure-html/unnamed-chunk-40-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Things to note:&lt;/strong&gt; Given the above trends, the top 3 demanded products have great potential in terms of acquisition and repayments. However, a lot of focus needs to be geared towards collecting the active loans for BORA product and reducing delinquent loans for LPG3 to less than 10%. Two products to keep an eye on in terms of collection and recovery instead of acquisition are HOME and TNK. These products have high delinquents and active loans compared to closed loans. The collection team should as well focus on reducing the non-performing loans for all product/ portfolio at risk (PAR) to less than 10%. Therefore, this calls for a review of collection strategies: SMS contents, time to send messages, and incentives.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;7.Time series products demand&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;Analysis of product demand over time is essential to understand when the different products are demanded. Such might as well provide great insights to the marketing team. Disbursement date was used and converted
+to Month-Year.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#create a product demand dataset
+ data$`Disbursed Date` &amp;lt;- as.Date(data$`Disbursed Date`, format = &amp;quot;%Y-%m-%d&amp;quot;)
+  
+  Time_series &amp;lt;- data %&amp;gt;% 
+    group_by(Product, `Disbursed Date`) %&amp;gt;% 
+  summarise(count = n())
+  
+  
+  Time_series_plot &amp;lt;- Time_series %&amp;gt;% 
+    group_by(Product, Month) %&amp;gt;% 
+    mutate(Total = sum(count))
+  
+Time_series_plot$Month &amp;lt;- format(as.Date(Time_series_plot$`Disbursed Date`), &amp;quot;%b - %Y&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;Time_series_plot &amp;lt;- read_excel(&amp;quot;demand.xlsx&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;Time_series_plot$Month &amp;lt;- factor(Time_series_plot$Month, 
+                    levels = c(&amp;quot;Jan - 2019&amp;quot;, &amp;quot;Feb - 2019&amp;quot;, &amp;quot;Mar - 2019&amp;quot;, &amp;quot;Apr - 2019&amp;quot;, &amp;quot;May - 2019&amp;quot;, &amp;quot;Jun - 2019&amp;quot;,
+                                  &amp;quot;Jul - 2019&amp;quot;, &amp;quot;Aug - 2019&amp;quot;, &amp;quot;Sep - 2019&amp;quot;, &amp;quot;Oct - 2019&amp;quot;, &amp;quot;Nov - 2019&amp;quot;,&amp;quot;Dec - 2019&amp;quot;,
+                                       &amp;quot;Jan - 2020&amp;quot;, &amp;quot;Feb - 2020&amp;quot;, &amp;quot;Mar - 2020&amp;quot;))&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;/project/portifolio-analysis/index_files/figure-html/unnamed-chunk-44-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;There has been a shift in demand for different products over time from the above general time series trends. For instance, LPG2, BORA, and CNVS were highly demanded in February and March 2020. There was a low demand shift for products between October 2019 and January 2020.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;7.1.Time series analysis for Top products&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;After filtering the top products,there was a peak demand for CNVS between August 2019 and December 2019. The need for JIKO has been relatively constant across the analysis period.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;/project/portifolio-analysis/index_files/figure-html/unnamed-chunk-47-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;8.Daily loans repayment analysis&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;The Final repayment date was used to analyze for the repayment days. This analysis shows progressive loan repayments with days of the week. However, the difference in not much dispersed. Low repayments were observed over the weekend. Knowledge of repayment days will be very crucial when it comes to collection.&lt;/p&gt;
+&lt;p&gt;Shifting collection to the most likely repaying days will ensure proper resource allocation in terms of the number of messages to send in a week or number of customers to be contacted. Better still, if the repayments are low over the weekend, what strategies need to be put in place if the collection team is not working over the weekend? Curate and schedule specific repayment reminder messages on Friday evening?&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#Generate weeks data
+Week &amp;lt;- data %&amp;gt;% 
+  group_by(Product, `Final Payment Date`) %&amp;gt;% 
+  summarise(count = n())
+ Week$`Final Payment Date` &amp;lt;-  as.Date(Week$`Final Payment Date`, format = &amp;quot;%Y-%m-%d&amp;quot;)
+ 
+ #change date into days of the week
+ Week$day &amp;lt;- format(as.Date(Week$`Final Payment Date`), &amp;quot;%A&amp;quot;)
+ 
+ Week_plot &amp;lt;- group_by(Week, day) %&amp;gt;% 
+   mutate(Total = sum(count))
+   
+ 
+Week_plot &amp;lt;- Week %&amp;gt;%
+     group_by(day) %&amp;gt;% 
+     summarise(sum(count))
+
+Week_plot &amp;lt;- Week_plot[-c(8), ]
+
+names(Week_plot) &amp;lt;- c(&amp;quot;Day&amp;quot;, &amp;quot;Total_Repayment&amp;quot;)
+
+Week_plot$Day &amp;lt;- factor(Week_plot$Day, 
+                        levels = c(&amp;quot;Monday&amp;quot;, &amp;quot;Tuesday&amp;quot;,&amp;quot;Wednesday&amp;quot;,&amp;quot;Thursday&amp;quot;,&amp;quot;Friday&amp;quot;,&amp;quot;Saturday&amp;quot;,&amp;quot;Sunday&amp;quot;))&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;/project/portifolio-analysis/index_files/figure-html/unnamed-chunk-51-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>Loan portifolio analysis dashboard</title>
+      <link>/project/loan-dashboard/loan-portifolio-analysis-dashboard/</link>
+      <pubDate>Wed, 02 Sep 2020 00:00:00 +0000</pubDate>
+      <guid>/project/loan-dashboard/loan-portifolio-analysis-dashboard/</guid>
+      <description>&lt;p&gt;Dashboard coming soon&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>Humanitarian Response to Cyclone Idai in Zimbabwe</title>
+      <link>/project/humanitarian-response-to-cyclone-idai-in-zimbabwe/</link>
+      <pubDate>Tue, 01 Sep 2020 00:00:00 +0000</pubDate>
+      <guid>/project/humanitarian-response-to-cyclone-idai-in-zimbabwe/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Static Maps</title>
+      <link>/project/static-maps/</link>
+      <pubDate>Tue, 01 Sep 2020 00:00:00 +0000</pubDate>
+      <guid>/project/static-maps/</guid>
+      <description>
+
+
+&lt;p&gt;&lt;strong&gt;Communication using maps&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;A map tells a story. The ultimate goal of any spatial data analysis or research is to communicate the key outputs. Visualization of spatial data inform of maps comes in handy when sharing useful insights that inform critical decision making.&lt;/p&gt;
+&lt;p&gt;Here, I would like to share my experience of spatial data visualization from different data analysis problems.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Regions of interest(ROI)&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;When doing a study/analysis involving a specific area(s) given a broader geographic location, you might be required to display a particular region(s) of interest. This map shows a case of areas of interest at the county level in Kenya from counties shapefile data.&lt;/p&gt;
+&lt;div class=&#34;figure&#34;&gt;
+&lt;img src=&#34;/media/Roi.jpeg&#34; alt=&#34;Figure 1: Regions of Interest&#34; /&gt;
+&lt;p class=&#34;caption&#34;&gt;&lt;em&gt;Figure 1&lt;/em&gt;: Regions of Interest&lt;/p&gt;
+&lt;/div&gt;
+&lt;p&gt;&lt;strong&gt;Parcels distribution within sub-counties&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;Parcels (point features) are distributed within polygon features(sub-counties boundaries). Point features can be schools, shops, hospitals, events occurring, e.t.c. Information on both points and polygons is stored in attributes.&lt;/p&gt;
+&lt;p&gt;The map below shows that parcels are located exclusively in the selected sub-counties. Such information is relevant. It gives insights that can be used for planning purposes or service delivery since we are narrowing down from more comprehensive geographic location(County level) to sub-counties level.&lt;/p&gt;
+&lt;div class=&#34;figure&#34;&gt;
+&lt;img src=&#34;/media/Parcels.jpeg&#34; alt=&#34;Figure 2: Point features distribution&#34; /&gt;
+&lt;p class=&#34;caption&#34;&gt;&lt;em&gt;Figure 2&lt;/em&gt;: Point features distribution&lt;/p&gt;
+&lt;/div&gt;
+&lt;p&gt;&lt;strong&gt;Regional customers purchase segmentation&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;You might want to understand the cumulative customers’ purchase within your customers’ regional coverage. Total sales data can as well be displayed on a map and variations color-coded.&lt;/p&gt;
+&lt;div class=&#34;figure&#34;&gt;
+&lt;img src=&#34;/media/Purchase.jpeg&#34; alt=&#34;Figure 3: Regional customers purchase&#34; /&gt;
+&lt;p class=&#34;caption&#34;&gt;&lt;em&gt;Figure 3&lt;/em&gt;: Regional customers purchase&lt;/p&gt;
+&lt;/div&gt;
+&lt;p&gt;&lt;strong&gt;Humanitarian response to Cyclone Idai in Zimbabwe&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;This map links to my &lt;a href=&#34;https://benmwasambo.shinyapps.io/zimbabwe_cyclone/&#34;&gt;project&lt;/a&gt; about humanitarian organizations’ efforts in response to the devastating cyclone Idai in Zimbabwe in March 2019. An excellent example of a choropleth map showing individuals reached at the district level.&lt;/p&gt;
+&lt;div class=&#34;figure&#34;&gt;
+&lt;img src=&#34;/media/Zimbabwe.jpeg&#34; alt=&#34;Figure 4: Humanitarian response map&#34; /&gt;
+&lt;p class=&#34;caption&#34;&gt;&lt;em&gt;Figure 4&lt;/em&gt;: Humanitarian response map&lt;/p&gt;
+&lt;/div&gt;
+&lt;p&gt;&lt;strong&gt;&lt;em&gt;More maps coming soon….&lt;/em&gt;&lt;/strong&gt;&lt;/p&gt;
+</description>
+    </item>
+    
+  </channel>
+</rss>

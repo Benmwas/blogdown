@@ -1,0 +1,308 @@
+---
+title: Insights from Loan portifolio analysis for a FinTech loan product
+author: [Benjamin Mwasambo]
+date: '2020-09-02'
+slug: insights-from-loan-portifolio-analysis-for-a-fintech-loan-product
+categories:
+  - R
+tags:
+  - Data analysis
+  - Data visualization
+  - Communication
+  - Insights
+summary: To gain actionable insights from a case FinTech product, we shall do an in-depth analysis of customers' loan dataset.
+authors: [Benjamin Mwasambo]
+external_link: ''
+image:
+  caption: ''
+  focal_point: ''
+  preview_only: no
+url_code: ''
+url_pdf: ''
+url_slides: ''
+url_video: ''
+slides: ''
+
+links:
+- icon: twitter
+  icon_pack: fab
+  name: Follow
+  url: https://twitter.com/Benmwasambo
+  
+---
+
+
+
+<p>Depending on business Key performance indicators, metrics that drive decisions can be obtained from variables in loan data. Some of key metrics include, but not limited to, expected return, return rate, loan repayment ratio, actual returns/repayment, total amount overdue.</p>
+<p>Overall loan portifolio analysis is required when determining the ‘health’ of business. Accurate analysis of loan data will help in making critical decisions that will support operations of other departments such as collections and customer support, marketing and operations.</p>
+<p>This project entails in-depth analysis of a fintech case loan product, data was obtained from a public domain. Given the dataset, different problems were addressed and insights obtained through analysis from the data.</p>
+<p><strong>Problems</strong></p>
+<ul>
+<li>To understand from the data the order at which subsquent customers purchased more than one product.</li>
+<li>Draw a pattern between age of customers and products purchased.</li>
+<li>Repayment behavior measured with Timely Repayment Percentage (TRP) and the choice of product bought.</li>
+<li>Pattern between gender and choice of product bought.</li>
+<li>Length/number of days it takes for customers to fully repay thair loans, addressing distribution and differences between the products.</li>
+<li>Given historical demand and repayment pattern of the products, which one would you push for and why?</li>
+<li>The products demand trends over time.</li>
+<li>Which day(s) of the week has the highest loan repayment.</li>
+</ul>
+<pre class="r"><code>#load required packages
+library(readxl)
+library(dplyr)
+library(tidyr)
+library(lubridate)
+library(ggplot2)
+library(scales)
+library(knitr)</code></pre>
+<pre class="r"><code>#Read data
+
+data &lt;- read_excel(&quot;loan_data.xlsx&quot;)
+
+data</code></pre>
+<p><strong>1.Order of products purchase by subsequent clients.</strong></p>
+<pre class="r"><code>#Filter for only subsquent products, cycle greater than 1
+summary &lt;- data %&gt;% 
+  filter(Cycle &gt; 1) %&gt;% 
+ select(Product,`Disbursed Date`,Cycle)</code></pre>
+<pre class="r"><code>plot_data &lt;- summary %&gt;% 
+  group_by(Product, Cycle) %&gt;% 
+  summarise(count = n())
+
+plot_data</code></pre>
+<p>In an analysis based on subsequent(repeat) customers, cycle 2 has the highest products demand. There was a
+high demand for BORA,LPG2 and CNVS in this cycle. BORA had a high number of purchase in cycle 2,
+then CNVS in cycle 3 and LPG2 in cycle 4. However, the difference is minimal with increase in number
+of cycles.</p>
+<p><img src="/project/portifolio-analysis/2020-09-02-insights-from-loan-portifolio-analysis-for-a-fintech-loan-product.en_files/figure-html/unnamed-chunk-9-1.png" width="672" /></p>
+<p><strong>1.1 Displaying distribution for top products</strong></p>
+<p>For a better visualization and clarity of the pattern, top products were filtered from the grouped product and
+cycles data.</p>
+<pre class="r"><code>Top_pdct &lt;- plot_data %&gt;% 
+  filter(Product==&quot;BORA&quot; | Product==&quot;LPG2&quot; | Product==&quot;CNVS&quot; | Product==&quot;P400&quot; | Product==&quot;BOOM&quot;)
+#display top rows and colums
+head(Top_pdct)</code></pre>
+<pre><code>## # A tibble: 6 x 3
+## # Groups:   Product [1]
+##   Product Cycle count
+##   &lt;chr&gt;   &lt;dbl&gt; &lt;int&gt;
+## 1 BOOM        2   246
+## 2 BOOM        3    47
+## 3 BOOM        4    12
+## 4 BOOM        5     4
+## 5 BOOM        6     2
+## 6 BOOM        7     1</code></pre>
+<p><img src="/project/portifolio-analysis/2020-09-02-insights-from-loan-portifolio-analysis-for-a-fintech-loan-product.en_files/figure-html/unnamed-chunk-11-1.png" width="672" /></p>
+<p><strong>2.Relationships between age and product purchased</strong></p>
+<p>Percentage age for each age group was computed from the sum of all purchases within the group.</p>
+<pre class="r"><code>Age_plot &lt;- Age %&gt;% 
+  group_by(Age, Product) %&gt;% 
+  summarise(count = n())
+
+#Percentage of product purchace per age
+Percentage &lt;- group_by(Age_plot, Age) %&gt;% 
+  mutate(Percent = (count/sum(count))*100)
+
+Percentage[,4] &lt;- round(Percentage[,4], digits = 2)</code></pre>
+<pre class="r"><code>#display top rows and columns
+head(Percentage)</code></pre>
+<pre><code>## # A tibble: 6 x 4
+## # Groups:   Age [1]
+##     Age Product count Percent
+##   &lt;dbl&gt; &lt;chr&gt;   &lt;int&gt;   &lt;dbl&gt;
+## 1    18 B00M        1    6.67
+## 2    18 BORA        2   13.3 
+## 3    18 CNVS        1    6.67
+## 4    18 LPG2        7   46.7 
+## 5    18 LPG3        2   13.3 
+## 6    18 P400        1    6.67</code></pre>
+<p>This data was used to show relationships between age and purchase of all products. The trend shows, high
+age and products correlations in LPG2 and CNVS. There was high demand of LPG2 between 18 and 50
+years and a diminish demand in age above 50 years with a less than 25% of the products purchased. On
+the other hand, CNVS was highly demanded by older age as compared to younger age. There is a positive
+correlation in age and this product demand; product demand increased with age.</p>
+<p><img src="/project/portifolio-analysis/2020-09-02-insights-from-loan-portifolio-analysis-for-a-fintech-loan-product.en_files/figure-html/unnamed-chunk-17-1.png" width="672" /></p>
+<p><strong>2.1 Age-products analysis for top demanded products</strong></p>
+<pre class="r"><code>Top_Percent &lt;- Percentage %&gt;%
+filter(Product==&quot;CNVS&quot; | Product==&quot;LPG2&quot; | Product==&quot;LPG3&quot; | Product==&quot;BORA&quot; | Product==&quot;P400&quot;)</code></pre>
+<p>The trend lines graph below explains in details the correlation between age and products as explained above.</p>
+<p><img src="/project/portifolio-analysis/2020-09-02-insights-from-loan-portifolio-analysis-for-a-fintech-loan-product.en_files/figure-html/unnamed-chunk-20-1.png" width="672" /></p>
+<p><strong>3. Repayment behaviour as measured with Timely Repayment Percentage(TRP) and choice of product bought</strong></p>
+<p>Average TRP for all products was used in this analysis.</p>
+<pre class="r"><code>TRP_summary &lt;- group_by(TRP_clean, Product) %&gt;%
+summarise(mean(TRP)*100)
+names(TRP_summary) &lt;- c(&quot;Product&quot;, &quot;Average_TRP&quot;)
+TRP_summary[,2] &lt;- round(TRP_summary[,2], digits = 2)</code></pre>
+<pre class="r"><code>head(TRP_summary)</code></pre>
+<pre><code>## # A tibble: 6 x 2
+##   Product Average_TRP
+##   &lt;chr&gt;         &lt;dbl&gt;
+## 1 B00M           47.8
+## 2 BOOM           49.2
+## 3 BORA           60.4
+## 4 CNVS           59.8
+## 5 COOK           55.9
+## 6 CVS2           67.1</code></pre>
+<p>Different products have different measure of timely installments repayment ranging from 23.52% to 75.33%.
+In this case, the pattern shows SILOS and KUNI were more timely repaid compared to other products
+while MKRT had a low repayment frequency. 54% of the products (12/22) have a TRP of more than 50%.</p>
+<p><img src="/project/portifolio-analysis/2020-09-02-insights-from-loan-portifolio-analysis-for-a-fintech-loan-product.en_files/figure-html/unnamed-chunk-25-1.png" width="672" /></p>
+<p><strong>4.Correlation/pattern between gender and choice of product bought</strong></p>
+<p>Percentage of gender to a specific product purchase was computed and used to derive the relationships
+between gender and products bought.</p>
+<pre class="r"><code>#create a gender dataset and add a percentage of gender purchase column
+Gender_data &lt;- data %&gt;% 
+   group_by(Gender, Product) %&gt;% 
+   summarize(count = n())
+ 
+ Gender_summary &lt;- group_by(Gender_data, Gender) %&gt;% 
+   mutate(Percentage_gender =  (count/sum(count))*100)
+ Gender_summary[,4] &lt;- round(Gender_summary[,4], digits = 1)
+
+ #Generate a plot dataset and position bar labels 
+ Gender_plot &lt;- Gender_summary %&gt;% 
+   group_by(Product) %&gt;% 
+   arrange(Product, desc(Gender)) %&gt;% 
+   mutate(lab_ypos = cumsum(Percentage_gender)- 0.5 * Percentage_gender)</code></pre>
+<p>The analsis shows most female dominated the products choice. However, four products: <strong>LPG2</strong>,<strong>LPG3</strong>,
+<strong>SKH+</strong> and <strong>BOOM</strong> were highly preferred by <strong>male</strong>.
+<img src="/project/portifolio-analysis/2020-09-02-insights-from-loan-portifolio-analysis-for-a-fintech-loan-product.en_files/figure-html/unnamed-chunk-28-1.png" width="672" /></p>
+<p><strong>5. Repayment length and distribution for full loan repayments</strong></p>
+<p>Full loan repayments here means: TRP = 100% and status = closed.</p>
+<pre class="r"><code>#Repayment data
+ Repayments &lt;- data %&gt;% 
+     select(Product,`Disbursed Date`,Status,`Final Payment Date`, TRP) %&gt;% 
+     filter(Status == &quot;Closed&quot; &amp; TRP == 1.000)
+
+Repayments$`Disbursed Date` &lt;- as.Date(Repayments$`Disbursed Date`, format =&quot;%Y-%m-%d&quot;)  
+ Repayments$`Final Payment Date` &lt;- as.Date(Repayments$`Final Payment Date`, format = &quot;%Y-%m-%d&quot;) 
+ 
+ #Add days column
+ Repayments &lt;-  mutate(Repayments, Days = as.numeric(`Final Payment Date` - `Disbursed Date`))
+ #dispaly top rows and columns
+head(Repayments)</code></pre>
+<pre><code>## # A tibble: 6 x 6
+##   Product `Disbursed Date` Status `Final Payment Date`   TRP  Days
+##   &lt;chr&gt;   &lt;date&gt;           &lt;chr&gt;  &lt;date&gt;               &lt;dbl&gt; &lt;dbl&gt;
+## 1 BORA    2019-01-09       Closed 2019-03-12               1    62
+## 2 BORA    2019-01-09       Closed 2019-08-01               1   204
+## 3 BORA    2019-01-09       Closed 2019-06-08               1   150
+## 4 LPG2    2019-01-09       Closed 2019-05-01               1   112
+## 5 LPG2    2019-01-09       Closed 2019-04-29               1   110
+## 6 LPG2    2019-01-09       Closed 2019-05-06               1   117</code></pre>
+<p>Most loans took around <strong>110-120 days</strong> to be repaid fully.</p>
+<pre><code>## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.</code></pre>
+<p><img src="/project/portifolio-analysis/2020-09-02-insights-from-loan-portifolio-analysis-for-a-fintech-loan-product.en_files/figure-html/unnamed-chunk-32-1.png" width="672" /></p>
+<p><strong>5.1 Distribution of timely full repaid loans per product.</strong></p>
+<p>In order to accurately know how long it took one product loan to be fully repaid and avoid bias, mean of the
+days it took the products to be repaid was computed.</p>
+<pre class="r"><code>#Compute mean of products per group
+mean_Repayment &lt;- group_by(Repayments, Product) %&gt;% 
+   mutate(Mean_days = mean(Days))
+  mean_Repayment[, 7] &lt;- trunc(mean_Repayment[, 7])
+  
+#dispaly top rows and columns
+head(mean_Repayment)</code></pre>
+<pre><code>## # A tibble: 6 x 7
+## # Groups:   Product [2]
+##   Product `Disbursed Date` Status `Final Payment Date`   TRP  Days Mean_days
+##   &lt;chr&gt;   &lt;date&gt;           &lt;chr&gt;  &lt;date&gt;               &lt;dbl&gt; &lt;dbl&gt;     &lt;dbl&gt;
+## 1 BORA    2019-01-09       Closed 2019-03-12               1    62       175
+## 2 BORA    2019-01-09       Closed 2019-08-01               1   204       175
+## 3 BORA    2019-01-09       Closed 2019-06-08               1   150       175
+## 4 LPG2    2019-01-09       Closed 2019-05-01               1   112       110
+## 5 LPG2    2019-01-09       Closed 2019-04-29               1   110       110
+## 6 LPG2    2019-01-09       Closed 2019-05-06               1   117       110</code></pre>
+<p>CNVS,COOK,CVS2,KUNI,LPG2,MKRT and P400 were among the products with less timely repayment days(less than 120 days).
+<img src="/project/portifolio-analysis/2020-09-02-insights-from-loan-portifolio-analysis-for-a-fintech-loan-product.en_files/figure-html/unnamed-chunk-36-1.png" width="672" /></p>
+<p><strong>6.Historical demand and repayment behavior</strong></p>
+<p><strong>Question:</strong> Which product would you push and why?
+To better understand the repayment behaviour of all products, percentage of each product loan status was
+analyzed. For instance, if a loan product has high percentage of arrears and write offs(Overdue and written
+off staus), and very low percentage of closed loans, this should be considered as ‘bad’ or poorly performing
+product. Hence, a call for better collection strategies, right customers target for the product or even seasonal
+consideration and geographic distribution.</p>
+<pre class="r"><code>Demand &lt;- data %&gt;% 
+    group_by(Product,Status) %&gt;% 
+    summarise(count = n()/20)
+  
+  Demand_plot &lt;- group_by(Demand, Product) %&gt;% 
+    mutate(Percentage = (count/sum(count))*100)
+  
+  Demand_plot[,4] &lt;- round(Demand_plot[,4], digits = 1)
+  
+  Demand_plot_plotII &lt;- Demand_plot %&gt;% 
+    group_by(Product) %&gt;% 
+    arrange(Product, desc(Status)) %&gt;% 
+    mutate(lab_ypos = cumsum(Percentage)- 0.5 * Percentage)
+  options(scipen = 999)
+  
+  #display top rows and columns
+head(Demand_plot_plotII)</code></pre>
+<pre><code>## # A tibble: 6 x 5
+## # Groups:   Product [2]
+##   Product Status      count Percentage lab_ypos
+##   &lt;chr&gt;   &lt;chr&gt;       &lt;dbl&gt;      &lt;dbl&gt;    &lt;dbl&gt;
+## 1 B00M    Written Off  0.05        0.3     0.15
+## 2 B00M    Overdue      4.2        23.7    12.2 
+## 3 B00M    Closed      10.2        57.3    52.6 
+## 4 B00M    Active       3.3        18.6    90.6 
+## 5 BOOM    Written Off  1.5         2.5     1.25
+## 6 BOOM    Overdue     11.4        19.1    12.0</code></pre>
+<p>The graph below shows combination of demand and product performance. The maroon line graph shows how
+the product was demanded, scale was reduced by 20 units(n/20). LPG2, LPG3 and BORA were highly
+demanded consecutively.
+<img src="/project/portifolio-analysis/2020-09-02-insights-from-loan-portifolio-analysis-for-a-fintech-loan-product.en_files/figure-html/unnamed-chunk-40-1.png" width="672" /></p>
+<p><strong>Things to note:</strong> Given the above trends, the top 3 demanded products have a great potential in terms of
+acquisation as well as repayments. However, alot of focus needs to geared towards collection of the active
+loans for BORA product as well as reducing delinquent loans for LPG3 to less than 10%. Two products to keep an eye on in terms of collection and recovery instead of aquisation are HOME and TNK. These products have high delinquents and active loans compared to closed loans. The collection team should as well focus on reducing the non-performing loans for all product/ portifolio at risk (PAR) to less than 10%. This therefore calls for review of collection strategies: SMS contents, time to send messages as well as incentives if possible.</p>
+<p><strong>7.Time series product demand</strong></p>
+<p>Time series product demand analysis is important to understand when the different products are demanded.
+This might as well provide great insights to the marketing team. Disbursement date was used and converted
+to Month-Year.</p>
+<pre class="r"><code>#create a product demand dataset
+ data$`Disbursed Date` &lt;- as.Date(data$`Disbursed Date`, format = &quot;%Y-%m-%d&quot;)
+  
+  Time_series &lt;- data %&gt;% 
+    group_by(Product, `Disbursed Date`) %&gt;% 
+  summarise(count = n())
+  
+  
+  Time_series_plot &lt;- Time_series %&gt;% 
+    group_by(Product, Month) %&gt;% 
+    mutate(Total = sum(count))
+  
+Time_series_plot$Month &lt;- format(as.Date(Time_series_plot$`Disbursed Date`), &quot;%b - %Y&quot;)</code></pre>
+<p><img src="/project/portifolio-analysis/2020-09-02-insights-from-loan-portifolio-analysis-for-a-fintech-loan-product.en_files/figure-html/unnamed-chunk-46-1.png" width="672" /></p>
+<p>From the above general time series trends, there has been observed a shift in demand for different products
+over time. For instance, LPG2, BORA and CNVS were highly demanded in February and March 2020. There was a low demand shift for products between October 2019 and January 2020.</p>
+<p><strong>7.1.Time series analysis for Top products</strong></p>
+<p>Filtering only top products,there was a peak in demand for CNVS between August 2019 and December 2019. The demand for JIKO has been fairly constant across the analysis period.</p>
+<p><img src="/project/portifolio-analysis/2020-09-02-insights-from-loan-portifolio-analysis-for-a-fintech-loan-product.en_files/figure-html/unnamed-chunk-49-1.png" width="672" /></p>
+<p><strong>8.Daily loans repayment analysis</strong></p>
+<p>Final repayment date was used to analyze for the repayment days. This analysis shows progressive loan repayments with days of the week.Although the difference in not much dispersed. Low repayments were observed over the weekend. Knowledge of repayment days will be very crucial when it comes to collection.</p>
+<p>Shifting collection to the most likely repaying days will ensure proper resource allocation in terms of number of SMS to send in a week, or number of customers to be contacted. Better still, if the repayments are low over the weekend, what strategies needs to be put in place if the collection team is not working over the weekend? Curate and schedule specific repayment reminder messages on Friday evening?</p>
+<pre class="r"><code>#Generate weeks data
+Week &lt;- data %&gt;% 
+  group_by(Product, `Final Payment Date`) %&gt;% 
+  summarise(count = n())
+ Week$`Final Payment Date` &lt;-  as.Date(Week$`Final Payment Date`, format = &quot;%Y-%m-%d&quot;)
+ 
+ #change date into days of the week
+ Week$day &lt;- format(as.Date(Week$`Final Payment Date`), &quot;%A&quot;)
+ 
+ Week_plot &lt;- group_by(Week, day) %&gt;% 
+   mutate(Total = sum(count))
+   
+ 
+Week_plot &lt;- Week %&gt;%
+     group_by(day) %&gt;% 
+     summarise(sum(count))
+
+Week_plot &lt;- Week_plot[-c(8), ]
+
+names(Week_plot) &lt;- c(&quot;Day&quot;, &quot;Total_Repayment&quot;)
+
+Week_plot$Day &lt;- factor(Week_plot$Day, 
+                        levels = c(&quot;Monday&quot;, &quot;Tuesday&quot;,&quot;Wednesday&quot;,&quot;Thursday&quot;,&quot;Friday&quot;,&quot;Saturday&quot;,&quot;Sunday&quot;))</code></pre>
+<p><img src="/project/portifolio-analysis/2020-09-02-insights-from-loan-portifolio-analysis-for-a-fintech-loan-product.en_files/figure-html/unnamed-chunk-53-1.png" width="672" /></p>

@@ -1,0 +1,262 @@
+---
+title: Time series market Price analysis for different agricultural commodities in Kenya
+author: Benjamin Mwasambo
+date: '2020-09-02'
+slug: time-series-market-price-analysis-for-different-commodities-in-kenya
+categories:
+  - R
+tags:
+  - market analysis
+  - Insights
+  - time series analysis
+subtitle: ''
+summary: Understanding periodic trends of market prices for Agricultural value chain is important to producers,traders as well as consumers. Here are some insights of time series market analysis for selected agricultural commodities in Kenya. 
+authors: [Benjamin Mwasambo]
+lastmod: '2020-09-02T15:21:04+03:00'
+featured: no
+image:
+  caption: Photo by Sonja Langford on Unsplash
+  focal_point: ''
+  preview_only: no
+projects: []
+
+
+links:
+- icon: twitter
+  icon_pack: fab
+  name: Follow
+  url: https://twitter.com/Benmwasambo
+  
+---
+
+```{r include=FALSE}
+library(readxl)
+library(lubridate)
+library(ggplot2)
+library(scales)
+library(RColorBrewer)
+library(dplyr)
+library(tidyr)
+library(rmarkdown)
+library(knitr)
+
+```
+
+
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(collapse = TRUE, out.width = "100%")
+```
+
+
+```{r include=FALSE}
+clean_data <- read_excel("merged_data.xlsx")
+
+clean_data
+```
+
+The selling of agricultural produce to consumers is one of the crucial stages in the agricultural value chain. However, the chain actors; producers(farmers), traders, and consumers may lack sufficient information about prevailing and historical regional market prices.
+
+This analysis shows trends for agricultural commodities prices in different regions from January 2018 to April 2020. Daily data was downloaded from [NAFIS](http://www.nafis.go.ke/category/market-info/) website. Many thanks to [Peris Bosire](https://www.linkedin.com/in/perisbosire/) for conducting extensive market data research and advising on these datasets' usage.
+
+Averages for monthly market prices in each region were used to analyze the trends. Rigorous cleaning of the data, which includes merging daily data files, was done, and the final 'clean data' was used for this analysis. However, a gap in data acquisition was observed from December 2018 to April 2020.  
+
+Only a few regions and commodities(with sufficient data) were selected for this analysis.
+
+*One caveat: Imputation of row means was done for commodities with missing price values.*
+```{r, eval=F, echo=T}
+RM = rowMeans(clean_data[, 6:26], na.rm = TRUE)
+
+#Missing row values for Nairobi
+
+clean_data$Nairobi[is.na(clean_data$Nairobi)] = RM[is.na(clean_data$Nairobi)]
+```
+
+Data acquisation dates were also converted to Month-Year.
+```{r, eval=F, echo=T}
+library(lubridate)
+clean_data$Date <- as.Date(clean_data$Date, format = "%Y-%m-%d")
+clean_data$Month <- format(as.Date(clean_data$Date), "%b - %Y")
+
+```
+
+```{r}
+clean_data$Month <- factor(clean_data$Month,
+                        levels = c("Jan - 2018", "Feb - 2018", "Mar - 2018", "Apr - 2018", "May - 2018", "Jun - 2018",
+                                   "Jul - 2018", "Aug - 2018", "Sep - 2018", "Oct - 2018", "Nov - 2018",
+                                   "Jan - 2019","Mar - 2019", "Apr - 2019", "May - 2019","Aug - 2019", "Feb - 2020",
+                                   "Mar - 2020", "Apr - 2020"))
+```
+
+**A glimpse of the data used for analysis**
+```{r}
+#show sample dataset used for analysis
+library(dplyr)
+library(knitr)
+summary <- clean_data[, 1:8] %>% 
+  head(6)
+summary %>% 
+  kable("html", caption = 'A summary of the dataset')
+  
+```
+
+**1.Market prices for commodities sold in Nairobi**
+
+The majority of the commodities have shown a one-year steady price decrease (from January 2018 to January 2019), followed by a tremendous upward shift in prices between January and August 2019. Relatively constant prices were recorded in the first four months of 2020. Tomatoes had variations in prices across the analysis period, with the highest price recorded in June 2018, at KSh. 7,000 per box(64Kg).
+
+When the price of green maize was comparatively high, a dry maize bag was sold at a lower price and vice versa. The two varieties of beans have a uniform trend where a bag of beans canadian was sold at a higher price throughout the seasons.
+```{r,warning=FALSE,message=FALSE,results='asis',fig.width=9,fig.height=6}
+#plot for Nairobi
+
+library(ggplot2)
+library(knitr)
+library(dplyr)
+
+Nairobi <-  ggplot(clean_data, aes(x= Month, y=Nairobi, group=Commodity)) +
+  geom_line(aes(color=Commodity))+
+  geom_point(aes(color=Commodity))+ ylab("Market prices (KSh)")+
+  xlab("Month-Year")+theme(axis.text.x = element_text( size=8, angle=60, color="black"))+
+  ggtitle("Time series monthly averaged market prices for selected commodities in Nairobi")+
+  theme(plot.title = element_text( colour = "#663300"))+
+  scale_y_continuous(labels = label_comma(big.mark = ","))+
+  theme(legend.position="top")
+
+Nairobi
+
+```
+
+**2.Market prices for commodities sold in Mombasa**
+
+Prices for commodities in Mombasa appeared to be highest compared to other towns. All commodities
+except eggs were sold at more than KSh.2,000 per unit. The prices of green maize were significantly higher
+compared to dry maize. A bag of dry maize was sold at a lower cost compared to other commodities
+throughout the months. However, **Avocados** recorded the highest prices in Mombasa compared to other
+towns; a bag was sold above KSh. 3,500 in all Months.
+
+```{r, echo=FALSE, warning=FALSE,message=FALSE,results='asis',fig.width=9,fig.height=6}
+Mombasa <- ggplot(clean_data, aes(x= Month, y=Mombasa, group=Commodity)) +
+  geom_line(aes(color=Commodity))+
+  geom_point(aes(color=Commodity))+ ylab("Market prices (KSh)")+
+  xlab("Month-Year")+theme(axis.text.x = element_text( size=8, angle=60, color="black"))+
+  ggtitle("Time series monthly averaged market prices for selected commodities in Mombasa")+
+  theme(plot.title = element_text( colour = "#663300"))+
+  scale_y_continuous(labels = label_comma(big.mark = ","))+
+  theme(legend.position="top")
+
+Mombasa
+```
+
+**3.Market prices for commodities sold in Kisumu**
+
+A bag of dry maize was sold at a slightly higher cost than that of green maize throughout the seasons
+in Kisumu. This shows a unique trend compared to other towns, where a bag of green maize was sold at
+higher prices than that of dry maize. Tomatoes were also sold at comparatively higher prices, recording up to
+KSh.10,000 per box in April 2019.
+
+```{r, echo=FALSE, warning=FALSE,message=FALSE,results='asis',fig.width=9,fig.height=6}
+Kisumu <- ggplot(clean_data, aes(x= Month, y= Kisumu, group=Commodity)) +
+  geom_line(aes(color=Commodity))+
+  geom_point(aes(color=Commodity))+ ylab("Market prices (KSh)")+
+  xlab("Month-Year")+theme(axis.text.x = element_text( size=8, angle=60, color="black"))+
+  ggtitle("Time series monthly averaged market prices for selected commodities in Kisumu")+
+  theme(plot.title = element_text( colour = "#663300"))+
+  scale_y_continuous(labels = label_comma(big.mark = ","))+
+  theme(legend.position="top")
+
+Kisumu
+```
+
+**4.Market prices for commodities sold in Nakuru**
+
+A bag of cabbages (126Kg)was sold at the lowest prices in Nakuru- as low as KSh.800 compared to other
+towns.
+```{r, echo=FALSE, warning=FALSE,message=FALSE,results='asis',fig.width=9,fig.height=6}
+Nakuru <- ggplot(clean_data, aes(x= Month, y= Nakuru, group=Commodity)) +
+  geom_line(aes(color=Commodity))+
+  geom_point(aes(color=Commodity))+ ylab("Market prices (KSh)")+
+  xlab("Month-Year")+theme(axis.text.x = element_text( size=8, angle=60, color="black"))+
+  ggtitle("Time series monthly averaged market prices for selected commodities in Nakuru")+
+  theme(plot.title = element_text( colour = "dark green"))+
+  scale_y_continuous(labels = label_comma(big.mark = ","))+
+  theme(legend.position="top")
+
+Nakuru
+```
+
+**5.Market prices for commodities sold in Eldoret**
+
+A unique trend was observed in Eldoret, where the cost of beans Mwitemania variety was higher compared
+to that of beans Canadian across all months except July 2018. The highest recorded price of tomatoes per box
+(64Kg box)was observed in June 2018 at KSh.11,142.
+
+```{r, echo=FALSE, warning=FALSE,message=FALSE,results='asis',fig.width=9,fig.height=6}
+Eldoret <- ggplot(clean_data, aes(x= Month, y=Eldoret, group=Commodity)) +
+  geom_line(aes(color=Commodity))+
+  geom_point(aes(color=Commodity))+ ylab("Market prices (KSh)")+
+  xlab("Month-Year")+theme(axis.text.x = element_text( size=8, angle=60, color="black"))+
+  ggtitle("Time series monthly averaged market prices for selected commodities in Eldoret")+
+  theme(plot.title = element_text( colour = "dark green"))+
+  scale_y_continuous(labels = label_comma(big.mark = ","))+
+  theme(legend.position="top")
+
+Eldoret
+```
+
+**5.Market prices for commodities sold in Kisii**
+
+```{r,  echo=FALSE, warning=FALSE,message=FALSE,results='asis',fig.width=9,fig.height=6}
+Kisii <- ggplot(clean_data, aes(x= Month, y=Kisii, group=Commodity)) +
+  geom_line(aes(color=Commodity))+
+  geom_point(aes(color=Commodity))+ ylab("Market prices (KSh)")+
+  xlab("Month-Year")+theme(axis.text.x = element_text( size=8, angle=60, color="black"))+
+  ggtitle("Time series monthly averaged market prices for selected commodities in Kisii")+
+  theme(plot.title = element_text( colour = "#663300"))+
+  scale_y_continuous(labels = label_comma(big.mark = ","))+
+  theme(legend.position="top")
+
+Kisii
+```
+
+**6.Market prices for commodities sold in Kitale**
+
+```{r, echo=FALSE, warning=FALSE,message=FALSE,results='asis',fig.width=9,fig.height=6}
+Kitale <- ggplot(clean_data, aes(x= Month, y=Kitale, group=Commodity)) +
+  geom_line(aes(color=Commodity))+
+  geom_point(aes(color=Commodity))+ ylab("Market prices (KSh)")+
+  xlab("Month-Year")+theme(axis.text.x = element_text( size=8, angle=60, color="black"))+
+  ggtitle("Time series monthly averaged market prices for selected commodities in Kitale")+
+  theme(plot.title = element_text( colour = "dark green"))+
+  scale_y_continuous(labels = label_comma(big.mark = ","))+
+  theme(legend.position="top")
+
+Kitale
+```
+
+**7.Market prices for commodities sold in Isiolo**
+
+```{r, echo=FALSE, warning=FALSE,message=FALSE,results='asis',fig.width=9,fig.height=6}
+Isiolo <- ggplot(clean_data, aes(x= Month, y=Isiolo, group=Commodity)) +
+  geom_line(aes(color=Commodity))+
+  geom_point(aes(color=Commodity))+ ylab("Market prices (KSh)")+
+  xlab("Month-Year")+theme(axis.text.x = element_text(size=8, angle=60, color="black"))+
+  ggtitle("Time series monthly averaged market prices for selected commodities in Isiolo")+
+  theme(plot.title = element_text(colour = "#663300"))+
+  scale_y_continuous(labels = label_comma(big.mark = ","))+
+  theme(legend.position="top")
+
+Isiolo
+```
+
+**Summary**
+
+The trend analysis shows different commodities’ prices behavior in various towns throughout the analysis period in a nutshell. There is a clear distinction in the recorded commodities; the following top 3 items were sold at more than KSh.3,000 per unit.
+
+* Beans Canadian
+* Beans Mwitemania
+* Tomatoes
+
+There was an overall tomato price spike in June 2018 in all towns. The average prices ranged from
+7,000-11,142 (KSh.) per box sold.
+
+
