@@ -1,8 +1,8 @@
 ---
-title: Customers location - Google map
+title: Clients location - Google map
 author: Benjamin Mwasambo
 date: '2020-09-02'
-slug: customers-location-google-map
+slug: clients-location-google-map
 categories:
   - GIS
 tags:
@@ -10,7 +10,7 @@ tags:
   - Mapping
   - google maps
   - GIS
-summary: Customers location and additional information displayed on google map.Click on the markers to see additional details as recorded in the dataset. 
+summary: Clients location and additional information displayed on google map.Click on the markers to see additional details as recorded in the dataset. 
 authors: [Benjamin Mwasambo]
 external_link: https://www.google.com/maps/d/u/0/viewer?mid=1FB8ojv5ALVhbEdxnvQ4U26gO_SL0KHbW&ll=-0.8014831862061844%2C36.53496950499997&z=9
 
