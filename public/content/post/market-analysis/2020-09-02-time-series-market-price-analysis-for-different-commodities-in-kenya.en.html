@@ -1,0 +1,309 @@
+---
+title: Time series market Price analysis for different agricultural commodities in Kenya
+author: Benjamin Mwasambo
+date: '2020-09-02'
+slug: time-series-market-price-analysis-for-different-commodities-in-kenya
+categories:
+  - R
+tags:
+  - market analysis
+  - Insights
+  - time series analysis
+subtitle: ''
+summary: Understanding periodic trends of market prices for Agricultural value chain is important to producers,traders as well as consumers. Here are some insights of time series market analysis for selected agricultural commodities in Kenya. 
+authors: [Benjamin Mwasambo]
+lastmod: '2020-09-02T15:21:04+03:00'
+featured: no
+image:
+  caption: ''
+  focal_point: ''
+  preview_only: no
+projects: []
+
+
+links:
+- icon: twitter
+  icon_pack: fab
+  name: Follow
+  url: https://twitter.com/Benmwasambo
+  
+---
+
+
+
+<p>This analysis shows trends for different agricultural commodities in different regions from January 2018 to April 2020. Daily data was downloaded from <a href="http://www.nafis.go.ke/category/market-info/">NAFIS</a> website. Many thanks to <a href="https://www.linkedin.com/in/perisbosire/">Peris Bosire</a> for conducting extensive market data research and advising on the usage of these datasets.</p>
+<p>Averages for monthly market prices in each region were used to analyze the trends. Rigorous cleaning of the data, which includes merging daily data files, was done and the final ‘clean data’ was used for this analysis. However, a gap in data acquisition was observed from December 2018 to April 2020.</p>
+<p>Only a few regions and commodities(with sufficient data) were selected for this analysis.</p>
+<p><em>One caveat: Imputation of row means was done for commodities with missing price values.</em></p>
+<pre class="r"><code>RM = rowMeans(clean_data[, 6:26], na.rm = TRUE)
+
+#Missing row values for Nairobi
+
+clean_data$Nairobi[is.na(clean_data$Nairobi)] = RM[is.na(clean_data$Nairobi)]</code></pre>
+<p>Data acquisation dates were also converted to Month-Year.</p>
+<pre class="r"><code>library(lubridate)
+clean_data$Date &lt;- as.Date(clean_data$Date, format = &quot;%Y-%m-%d&quot;)
+clean_data$Month &lt;- format(as.Date(clean_data$Date), &quot;%b - %Y&quot;)
+</code></pre>
+<pre class="r"><code>clean_data$Month &lt;- factor(clean_data$Month,
+                        levels = c(&quot;Jan - 2018&quot;, &quot;Feb - 2018&quot;, &quot;Mar - 2018&quot;, &quot;Apr - 2018&quot;, &quot;May - 2018&quot;, &quot;Jun - 2018&quot;,
+                                   &quot;Jul - 2018&quot;, &quot;Aug - 2018&quot;, &quot;Sep - 2018&quot;, &quot;Oct - 2018&quot;, &quot;Nov - 2018&quot;,
+                                   &quot;Jan - 2019&quot;,&quot;Mar - 2019&quot;, &quot;Apr - 2019&quot;, &quot;May - 2019&quot;,&quot;Aug - 2019&quot;, &quot;Feb - 2020&quot;,
+                                   &quot;Mar - 2020&quot;, &quot;Apr - 2020&quot;))</code></pre>
+<p><strong>A glimpse of the data used for analysis</strong></p>
+<pre class="r"><code>#show sample dataset used for analysis
+library(dplyr)
+library(knitr)
+summary &lt;- clean_data[, 1:8] %&gt;% 
+  head(6)
+summary %&gt;% 
+  kable(&quot;html&quot;, caption = &#39;A summary of the dataset&#39;)</code></pre>
+<table>
+<caption>
+<span id="tab:unnamed-chunk-6">Table 1: </span>A summary of the dataset
+</caption>
+<thead>
+<tr>
+<th style="text-align:left;">
+Month
+</th>
+<th style="text-align:left;">
+Commodity
+</th>
+<th style="text-align:right;">
+Nairobi
+</th>
+<th style="text-align:right;">
+Mombasa
+</th>
+<th style="text-align:right;">
+Kisumu
+</th>
+<th style="text-align:right;">
+Nakuru
+</th>
+<th style="text-align:right;">
+Eldoret
+</th>
+<th style="text-align:right;">
+Kisii
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+Apr - 2018
+</td>
+<td style="text-align:left;">
+Avocado
+</td>
+<td style="text-align:right;">
+2300
+</td>
+<td style="text-align:right;">
+3500
+</td>
+<td style="text-align:right;">
+1800
+</td>
+<td style="text-align:right;">
+2185
+</td>
+<td style="text-align:right;">
+2314
+</td>
+<td style="text-align:right;">
+1637
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Apr - 2018
+</td>
+<td style="text-align:left;">
+Beans Canadian
+</td>
+<td style="text-align:right;">
+7200
+</td>
+<td style="text-align:right;">
+7106
+</td>
+<td style="text-align:right;">
+8342
+</td>
+<td style="text-align:right;">
+7200
+</td>
+<td style="text-align:right;">
+7106
+</td>
+<td style="text-align:right;">
+7106
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Apr - 2018
+</td>
+<td style="text-align:left;">
+Beans Mwitemania
+</td>
+<td style="text-align:right;">
+6750
+</td>
+<td style="text-align:right;">
+5564
+</td>
+<td style="text-align:right;">
+6429
+</td>
+<td style="text-align:right;">
+5500
+</td>
+<td style="text-align:right;">
+8100
+</td>
+<td style="text-align:right;">
+6429
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Apr - 2018
+</td>
+<td style="text-align:left;">
+Cabbages
+</td>
+<td style="text-align:right;">
+1660
+</td>
+<td style="text-align:right;">
+2717
+</td>
+<td style="text-align:right;">
+1250
+</td>
+<td style="text-align:right;">
+1071
+</td>
+<td style="text-align:right;">
+1564
+</td>
+<td style="text-align:right;">
+1534
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Apr - 2018
+</td>
+<td style="text-align:left;">
+Dry Maize
+</td>
+<td style="text-align:right;">
+2800
+</td>
+<td style="text-align:right;">
+2535
+</td>
+<td style="text-align:right;">
+3514
+</td>
+<td style="text-align:right;">
+2500
+</td>
+<td style="text-align:right;">
+2392
+</td>
+<td style="text-align:right;">
+2685
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Apr - 2018
+</td>
+<td style="text-align:left;">
+Eggs
+</td>
+<td style="text-align:right;">
+324
+</td>
+<td style="text-align:right;">
+330
+</td>
+<td style="text-align:right;">
+330
+</td>
+<td style="text-align:right;">
+300
+</td>
+<td style="text-align:right;">
+333
+</td>
+<td style="text-align:right;">
+325
+</td>
+</tr>
+</tbody>
+</table>
+<p><strong>1.Market prices for commodities sold in Nairobi</strong></p>
+<p>The majority of the commodities have shown a one-year steady price decrease (from January 2018 to January 2019), followed by a tremendous upward shift in prices between January and August 2019. Fairly constant prices were recorded in the first four months of 2020. Tomatoes had variations in prices across the analysis period with the highest price recorded in June 2018, at KSh. 7,000 per box(64Kg).</p>
+<p>When the price of green maize was comparatively high, a bag of dry maize was sold at a lower price and vice versa. The two varieties of beans have a uniform trend where a bag of beans canadian was sold at a higher price throughout the seasons.</p>
+<pre class="r"><code>#plot for Nairobi
+
+library(ggplot2)
+library(knitr)
+library(dplyr)
+
+Nairobi &lt;-  ggplot(clean_data, aes(x= Month, y=Nairobi, group=Commodity)) +
+  geom_line(aes(color=Commodity))+
+  geom_point(aes(color=Commodity))+ ylab(&quot;Market prices (KSh)&quot;)+
+  xlab(&quot;Month-Year&quot;)+theme(axis.text.x = element_text( size=8, angle=60, color=&quot;black&quot;))+
+  ggtitle(&quot;Time series monthly averaged market prices for selected commodities in Nairobi&quot;)+
+  theme(plot.title = element_text( colour = &quot;#663300&quot;))+
+  scale_y_continuous(labels = label_comma(big.mark = &quot;,&quot;))+
+  theme(legend.position=&quot;top&quot;)
+
+Nairobi</code></pre>
+<p><img src="/post/market-analysis/2020-09-02-time-series-market-price-analysis-for-different-commodities-in-kenya.en_files/figure-html/unnamed-chunk-7-1.png" width="100%" /></p>
+<p><strong>2.Market prices for commodities sold in Mombasa</strong></p>
+<p>Prices for commodities in Mombasa appeared to be highest compared to other towns. All commodities
+except eggs were sold at more than KSh.2,000 per unit. The prices of green maize were significantly higher
+compared to dry maize. A bag of dry maize was sold at a lower price compared to other commodities
+throughout the months. However, <strong>Avocados</strong> recorded the highest prices in Mombasa compared to other
+towns, a bag was sold above KSh. 3,500 in all Months.</p>
+<p><img src="/post/market-analysis/2020-09-02-time-series-market-price-analysis-for-different-commodities-in-kenya.en_files/figure-html/unnamed-chunk-8-1.png" width="100%" /></p>
+<p><strong>3.Market prices for commodities sold in Kisumu</strong></p>
+<p>A bag of dry maize was sold at a slightly higher price compared to that of green maize throughout the seasons
+in Kisumu. This shows a unique trend compared to other towns, where a bag of green maize was sold at
+higher prices than that of dry maize. Tomatoes were also sold at comparatively higher prices recording up to
+KSh.10,000 per box in April 2019.</p>
+<p><img src="/post/market-analysis/2020-09-02-time-series-market-price-analysis-for-different-commodities-in-kenya.en_files/figure-html/unnamed-chunk-9-1.png" width="100%" /></p>
+<p><strong>4.Market prices for commodities sold in Nakuru</strong></p>
+<p>A bag of cabbages (126Kg)was sold at the lowest prices in Nakuru- as low as KSh.800 compared to other
+towns.
+<img src="/post/market-analysis/2020-09-02-time-series-market-price-analysis-for-different-commodities-in-kenya.en_files/figure-html/unnamed-chunk-10-1.png" width="100%" /></p>
+<p><strong>5.Market prices for commodities sold in Eldoret</strong></p>
+<p>A unique trend was observed in Eldoret where the price of beans Mwitemania variety was higher compared
+to that of beans Canadian across all months except July 2018. The Highest recorded price of tomatoes per box
+(64Kg box)was observed in June 2018 at KSh.11,142.</p>
+<p><img src="/post/market-analysis/2020-09-02-time-series-market-price-analysis-for-different-commodities-in-kenya.en_files/figure-html/unnamed-chunk-11-1.png" width="100%" /></p>
+<p><strong>5.Market prices for commodities sold in Kisii</strong></p>
+<p><img src="/post/market-analysis/2020-09-02-time-series-market-price-analysis-for-different-commodities-in-kenya.en_files/figure-html/unnamed-chunk-12-1.png" width="100%" /></p>
+<p><strong>6.Market prices for commodities sold in Kitale</strong></p>
+<p><img src="/post/market-analysis/2020-09-02-time-series-market-price-analysis-for-different-commodities-in-kenya.en_files/figure-html/unnamed-chunk-13-1.png" width="100%" /></p>
+<p><strong>7.Market prices for commodities sold in Isiolo</strong></p>
+<p><img src="/post/market-analysis/2020-09-02-time-series-market-price-analysis-for-different-commodities-in-kenya.en_files/figure-html/unnamed-chunk-14-1.png" width="100%" /></p>
+<p><strong>Summary</strong></p>
+<p>In a nutshell, the trend analysis shows different commodities’ prices behavior in different towns throughout the analysis period. There is a clear distinction in the average prices of the recorded commodities; the following top 3
+commodities were sold at more than KSh.3,000 per unit.</p>
+<ul>
+<li>Beans Canadian</li>
+<li>Beans Mwitemania</li>
+<li>Tomatoes</li>
+</ul>
+<p>There was an overall tomato price spike in June 2018 in all towns. The average prices ranged from
+7,000-11,142 (KSh.) per box sold.</p>

@@ -1,0 +1,695 @@
+---
+title: Insights from Loan portfolio analysis for a FinTech loan product
+author: [Benjamin Mwasambo]
+date: '2020-09-02'
+slug: insights-from-loan-portfolio-analysis-for-a-fintech-loan-product
+categories:
+  - R
+tags:
+  - Data analysis
+  - Data visualization
+  - Communication
+  - Insights
+summary: To gain actionable insights from a case FinTech product, we shall do an in-depth analysis of customers' loan dataset.
+authors: [Benjamin Mwasambo]
+external_link: ''
+image:
+  caption: Photo by Franki Chamaki on Unsplash
+  focal_point: ''
+  preview_only: no
+url_code: ''
+url_pdf: ''
+url_slides: ''
+url_video: ''
+slides: ''
+
+links:
+- icon: twitter
+  icon_pack: fab
+  name: Follow
+  url: https://twitter.com/Benmwasambo
+  
+---
+Depending on business Key performance indicators, metrics that drive decisions can be obtained from loan data variables. Some of the key metrics include, but are not limited to, expected return, return rate, loan repayment ratio, actual returns/repayment, total amount overdue. 
+
+Overall, loan portfolio analysis is required when determining the 'health' of business. Accurate analysis of loan data will help make critical decisions that will support other departments' operations, such as collections and customer support, and marketing.
+
+This project entails an in-depth analysis of a fintech case loan product; datasets were obtained from a public domain. Given the dataset, different problems were addressed, and insights were obtained through analysis from the data. 
+
+**Problems**
+
+* To understand from the data, the order at which subsequent customers purchased more than one product.
+* Draw a pattern between the age of customers and products purchased.
+* Repayment behavior measured with Timely Repayment Percentage (TRP) and the choice of product bought. 
+* Pattern between gender and choice of product bought.
+* Length/number of days it takes for customers to fully repay their loans, addressing distribution and differences between the products.
+* Given the products' historical demand and repayment pattern, which one would you push for and why?
+* The products demand trends over time.
+* Which day(s) of the week has the highest loan repayment.
+
+```{r, eval=F, echo=T}
+#load required packages
+library(readxl)
+library(dplyr)
+library(tidyr)
+library(lubridate)
+library(ggplot2)
+library(scales)
+library(knitr)
+```
+
+```{r include=FALSE}
+
+#Actual code run
+library(readxl)
+library(dplyr)
+library(tidyr)
+library(lubridate)
+library(ggplot2)
+library(scales)
+library(knitr)
+```
+
+```{r, eval=F, echo=T}
+#Read data
+
+data <- read_excel("loan_data.xlsx")
+
+data
+```
+
+```{r include=FALSE}
+
+#Actual code run
+data <- read_excel("loan_data.xlsx")
+
+data
+```
+
+**1.Order of products purchase by subsequent clients.**
+
+```{r, eval=F, echo=T}
+#Filter for only subsquent products, cycle greater than 1
+summary <- data %>% 
+  filter(Cycle > 1) %>% 
+ select(Product,`Disbursed Date`,Cycle)
+
+```
+
+```{r, eval=F, echo=T}
+plot_data <- summary %>% 
+  group_by(Product, Cycle) %>% 
+  summarise(count = n())
+
+plot_data
+```
+
+
+```{r include=FALSE}
+
+#Actual code run
+
+library(dplyr)
+
+summary <- data %>% 
+  filter(Cycle > 1) %>% 
+ select(Product,`Disbursed Date`,Cycle)
+
+summary
+
+```
+
+```{r include=FALSE}
+#Actual code run
+plot_data <- summary %>% 
+  group_by(Product, Cycle) %>% 
+  summarise(count = n())
+
+plot_data
+```
+
+In an analysis based on subsequent(repeat) customers, cycle 2 has the highest product demand. There was a
+high demand for BORA, LPG2, and CNVS in this cycle. BORA had a high number of purchases in cycle 2,
+then CNVS in cycle 3 and LPG2 in cycle 4. However, the difference is minimal, with an increase in number
+of cycles.
+
+```{r, echo=FALSE}
+library(ggplot2)
+
+order <- ggplot(plot_data, aes(x=Cycle, y = count, fill = Product)) +
+  geom_bar(stat = "identity", position = "dodge")+
+  theme(panel.grid.minor.x=element_blank(),
+        panel.grid.major.x=element_blank()) +theme(panel.background = element_blank()) +
+  theme(panel.grid.major = element_line(colour = "light grey"))+
+  theme(axis.line.x = element_line(size = 1.5, colour = "#c94a38"))+
+  theme(legend.position = "right")+
+  theme(plot.title = element_text(hjust = 0.5, colour = "dark green"))+
+  theme(axis.text.x = element_text(face = "bold", size=8, angle=0, color="black"))+
+  labs(title = "Distribution of all products sold per cycle", x = "Cycles", y = "No. of products bought")
+
+order
+```
+
+**1.1 Displaying distribution for top products**
+
+For better visualization and clarity of the pattern, top products were filtered from the grouped product and
+cycles dataset.
+
+```{r}
+Top_pdct <- plot_data %>% 
+  filter(Product=="BORA" | Product=="LPG2" | Product=="CNVS" | Product=="P400" | Product=="BOOM")
+#display top rows and colums
+head(Top_pdct)
+```
+
+```{r echo=FALSE}
+top <- ggplot(Top_pdct, aes(x=Cycle, y = count, fill = Product)) +
+  geom_bar(stat = "identity", position = "dodge")+
+  scale_fill_manual(values = c("#377DA9","#E79435", "#228B22", "#FF9999", "#BB523A"))+
+  labs(title = "Distribution of Top Products sold per cycle", x = "Cycles", y = "No. of products bought")+
+  theme(panel.grid.minor.x=element_blank(),
+        panel.grid.major.x=element_blank()) +theme(panel.background = element_blank()) +
+  theme(panel.grid.major = element_line(colour = "light grey"))+
+  theme(axis.line.x = element_line(size = 1.5, colour = "#c94a38"))+
+  theme(legend.position = "bottom", legend.direction = "horizontal")+
+  theme(plot.title = element_text(hjust = 0.5, colour = "dark green"))+
+  theme(axis.text.x = element_text(face = "bold", size=8, angle=0, color="black"))
+
+top
+```
+
+**2.Relationships between age and product purchased**
+
+The Percentage age for each age group was computed from the sum of all purchases within the group.
+
+```{r include=FALSE}
+Cor_data <- data %>% 
+  select(DOB, Product)  
+
+which(is.na(Cor_data$DOB))
+
+Cor_data$DOB <- as.Date(Cor_data$DOB, format = "%Y-%m-%d")
+Cor_clean <- Cor_data[-c(6079,6307,15336,17364,17378,18088,21726,22837,23095,23192,23457,23989,27506,27626), ]
+
+
+#Add years column
+Cor_clean$Age_days <- Sys.Date()- Cor_clean$DOB
+Cor_clean$Age <- Cor_clean$Age_days/365
+as.numeric(Cor_clean$Age)
+
+```
+
+```{r include=FALSE}
+Age <- read_excel("age.xlsx")
+Age[,4] <- trunc(Age[,4])
+```
+
+```{r, eval=F, echo=T}
+Age_plot <- Age %>% 
+  group_by(Age, Product) %>% 
+  summarise(count = n())
+
+#Percentage of product purchace per age
+Percentage <- group_by(Age_plot, Age) %>% 
+  mutate(Percent = (count/sum(count))*100)
+
+Percentage[,4] <- round(Percentage[,4], digits = 2)
+
+```
+
+
+```{r include=FALSE}
+#Actual run
+
+Age_plot <- Age %>% 
+  group_by(Age, Product) %>% 
+  summarise(count = n())
+
+#Percentage of product purchace per age
+Percentage <- group_by(Age_plot, Age) %>% 
+  mutate(Percent = (count/sum(count))*100)
+
+Percentage[,4] <- round(Percentage[,4], digits = 2)
+
+```
+
+```{r}
+#display top rows and columns
+head(Percentage)
+```
+
+This data was used to show relationships between age and purchase of all products. The trend shows high age and products' correlations in LPG2 and CNVS. There was a high demand for LPG2 between 18 and 50 years and a diminished demand in the age above 50 years with a less than 25% of the products purchased. On the other hand, CNVS was highly demanded by older age as compared to a younger age class. A pattern was observed in age, and this product demand; product demand increased with age.
+
+```{r echo=FALSE}
+ggplot(Percentage, aes(x = Age, y = Percent, color = Product)) + geom_point()+
+  labs(title = "Percentage distribution all demanded Products by Age", x = "Age in Years", y = "Percentage of Products bought(%)")+
+  theme(plot.title = element_text(hjust = 0.5, colour = "dark green"))
+```
+
+**2.1 Age-products analysis for top demanded products**
+```{r,  eval=F, echo=T}
+Top_Percent <- Percentage %>%
+filter(Product=="CNVS" | Product=="LPG2" | Product=="LPG3" | Product=="BORA" | Product=="P400")
+```
+
+The trend line graph below explains in detail the relationship between age and products, as described above.
+
+```{r include=FALSE}
+#Actual code run
+Top_Percent <- Percentage %>%
+filter(Product=="CNVS" | Product=="LPG2" | Product=="LPG3" | Product=="BORA" | Product=="P400")
+```
+
+```{r echo=FALSE}
+top_age <- ggplot(Top_Percent, aes(x = Age, y = Percent, group = Product)) + geom_line(aes(color = Product))+
+  geom_hline(yintercept = 12.5,color="black", linetype = "dashed")+
+  geom_vline(xintercept = 50,color="red", linetype = "dashed")+
+  theme(panel.grid.minor.x=element_blank(),
+       panel.grid.major.x=element_blank()) +theme(panel.background = element_blank()) +
+  theme(panel.grid.major = element_line(colour = "light grey"))+
+  theme(axis.line.x = element_line(size = 1.5, colour = "#c94a38"))+
+  theme(legend.position = "top", legend.direction = "horizontal")+
+  theme(plot.title = element_text(hjust = 0.5, colour = "dark green"))+
+  theme(axis.text.x = element_text(face = "bold", size=8, angle=0, color="black"))+
+  labs(title = "Percentage distribution of Top demanded Products by Age", x = "Age in Years", y = "Percentage of Products bought(%)")
+
+top_age
+```
+
+**3. Repayment behaviour as measured with Timely Repayment Percentage(TRP) and choice of product bought**
+
+Average TRP for all products was used in this analysis.
+
+```{r, eval=F, echo=T}
+TRP_summary <- group_by(TRP_clean, Product) %>%
+summarise(mean(TRP)*100)
+names(TRP_summary) <- c("Product", "Average_TRP")
+TRP_summary[,2] <- round(TRP_summary[,2], digits = 2)
+```
+
+
+```{r include=FALSE}
+#Actual code run
+TRP_clean <- read_excel("TRP_clean.xlsx")
+```
+
+```{r include=FALSE}
+#Actual code run
+TRP_summary <-  group_by(TRP_clean, Product) %>%   
+  summarise(mean(TRP)*100)
+ names(TRP_summary) <- c("Product", "Average_TRP")
+ TRP_summary[,2] <- round(TRP_summary[,2], digits = 2)
+```
+
+```{r}
+head(TRP_summary)
+```
+
+Different products have a different measure of timely installment repayment ranging from 23.52% to 75.33%.In this case, the pattern shows SILOS and KUNI were more timely repaid compared to other products while MKRT had a low repayment frequency. 54% of the products (12/22) have a TRP of more than 50%.
+
+```{r echo=FALSE}
+plot <- ggplot(TRP_summary, aes(x = reorder(Product, -Average_TRP), y = Average_TRP)) + 
+   geom_bar(stat = "identity", position = "dodge", color='skyblue',fill='steel blue')+
+   theme(panel.grid.minor.x=element_blank(),
+         panel.grid.major.x=element_blank()) +theme(panel.background = element_blank()) +
+   theme(panel.grid.major = element_line(colour = "light grey"))+
+   theme(axis.line.x = element_line(size = 1.5, colour = "#c94a38"))+
+   theme(plot.title = element_text(hjust = 0.5, colour = "dark green"))+
+   theme(axis.text.x = element_text(face = "bold", size=8, angle=60, color="black"))+
+   geom_text(aes(label = Average_TRP),vjust = -0.25, size = 2)+
+   labs(title = "Average TRP for All Products bought\n (Repayment pattern per product)", x = "Products", y = "Mean TRP (%)")
+
+plot
+```
+
+
+**4.Correlation/pattern between gender and choice of product bought**
+
+Percentage of gender to a specific product purchase was computed and used to derive the relationships between gender and products bought.
+
+```{r, eval=F, echo=T}
+#create a gender dataset and add a percentage of gender purchase column
+Gender_data <- data %>% 
+   group_by(Gender, Product) %>% 
+   summarize(count = n())
+ 
+ Gender_summary <- group_by(Gender_data, Gender) %>% 
+   mutate(Percentage_gender =  (count/sum(count))*100)
+ Gender_summary[,4] <- round(Gender_summary[,4], digits = 1)
+
+ #Generate a plot dataset and position bar labels 
+ Gender_plot <- Gender_summary %>% 
+   group_by(Product) %>% 
+   arrange(Product, desc(Gender)) %>% 
+   mutate(lab_ypos = cumsum(Percentage_gender)- 0.5 * Percentage_gender)
+```
+
+```{r include=FALSE}
+#Actual code run
+Gender_data <- data %>% 
+   group_by(Gender, Product) %>% 
+   summarize(count = n())
+ 
+ Gender_summary <- group_by(Gender_data, Gender) %>% 
+   mutate(Percentage_gender =  (count/sum(count))*100)
+ Gender_summary[,4] <- round(Gender_summary[,4], digits = 1)
+ 
+ Gender_plot <- Gender_summary %>% 
+   group_by(Product) %>% 
+   arrange(Product, desc(Gender)) %>% 
+   mutate(lab_ypos = cumsum(Percentage_gender)- 0.5 * Percentage_gender)
+```
+
+The analysis shows most females dominated the products' choice. However, four products: **LPG2**, **LPG3**, **SKH+** and, **BOOM** were highly preferred by **male**.
+```{r echo=FALSE}
+ gender <- ggplot(Gender_plot, aes(fill=Gender, y= Percentage_gender, x= Product)) + 
+   geom_bar(position="stack", stat="identity")+
+   geom_text(aes(y = lab_ypos, label = paste0(Percentage_gender,"%"), group = Gender), color = "black", size =2.5)+
+   theme(panel.grid.minor.x=element_blank(),
+         panel.grid.major.x=element_blank()) +theme(panel.background = element_blank()) +
+   theme(panel.grid.major = element_line(colour = "light grey"))+
+   theme(axis.line.x = element_line(size = 1.5, colour = "#c94a38"))+
+   theme(plot.title = element_text(hjust = 0.5, colour = "dark green"))+
+   theme(axis.text.x = element_text(face = "bold", size=8, angle=60, color="black"))+
+   theme(legend.position = "top", legend.direction = "horizontal")+
+   labs(title = "Percentage of gender per product bought", x = "Products", y = "Gender Percentage (%)")
+
+gender
+```
+
+**5. Repayment length and distribution for full loan repayments**
+
+Full loan repayments here means: TRP = 100% and status = closed.
+```{r, eval=F, echo=T}
+#Repayment data
+ Repayments <- data %>% 
+     select(Product,`Disbursed Date`,Status,`Final Payment Date`, TRP) %>% 
+     filter(Status == "Closed" & TRP == 1.000)
+
+Repayments$`Disbursed Date` <- as.Date(Repayments$`Disbursed Date`, format ="%Y-%m-%d")  
+ Repayments$`Final Payment Date` <- as.Date(Repayments$`Final Payment Date`, format = "%Y-%m-%d") 
+ 
+ #Add days column
+ Repayments <-  mutate(Repayments, Days = as.numeric(`Final Payment Date` - `Disbursed Date`))
+ #dispaly top rows and columns
+head(Repayments)
+```
+
+```{r include=FALSE}
+#Actual code run
+Repayments <- data %>% 
+     select(Product,`Disbursed Date`,Status,`Final Payment Date`, TRP) %>% 
+     filter(Status == "Closed" & TRP == 1.000)
+
+Repayments$`Disbursed Date` <- as.Date(Repayments$`Disbursed Date`, format ="%Y-%m-%d")  
+ Repayments$`Final Payment Date` <- as.Date(Repayments$`Final Payment Date`, format = "%Y-%m-%d")
+ 
+ Repayments <-  mutate(Repayments, Days = as.numeric(`Final Payment Date` - `Disbursed Date`))
+```
+
+```{r echo=FALSE}
+ head(Repayments)
+```
+Most loans took around **110-120 days** to be repaid fully.
+
+```{r echo=FALSE}
+days <- ggplot(Repayments, aes(x=Days)) +
+   geom_histogram(color="dark blue", fill= "light blue",position="identity", alpha=0.5)+
+   geom_density(alpha=0.6)+theme_classic()+
+   labs(title = "Distribution of repayment days\n (Fully repaid loans)~ TRP=100%, Status=closed")+
+   theme(plot.title = element_text(hjust = 0.5, colour = "dark green"))
+
+days
+```
+
+**5.1 Distribution of timely full repaid loans per product.**
+
+To accurately know how long it took one product loan to be fully repaid and avoid bias, the mean of the days it took the products to be repaid was computed.
+
+```{r, eval=F, echo=T}
+#Compute mean of products per group
+mean_Repayment <- group_by(Repayments, Product) %>% 
+   mutate(Mean_days = mean(Days))
+  mean_Repayment[, 7] <- trunc(mean_Repayment[, 7])
+  
+#dispaly top rows and columns
+head(mean_Repayment)
+```
+
+```{r include=FALSE}
+#Actual code run
+mean_Repayment <- group_by(Repayments, Product) %>% 
+   mutate(Mean_days = mean(Days))
+  mean_Repayment[, 7] <- trunc(mean_Repayment[, 7])
+```
+
+```{r echo=FALSE}
+head(mean_Repayment)
+```
+
+CNVS, COOK, CVS2, KUNI, LPG2, MKRT, and P400 were among the products with less timely repayment days(less than 120 days).
+```{r echo=FALSE}
+distribution <- ggplot(mean_Repayment, aes(x=Product, y=Mean_days))+ 
+    geom_bar(position = "dodge",stat = "identity", fill ="light green", color = "black" )+
+    theme(panel.grid.minor.x=element_blank(),
+          panel.grid.major.x=element_blank()) +theme(panel.background = element_blank()) +
+    theme(panel.grid.major = element_line(colour = "light grey"))+
+    theme(axis.line.x = element_line(size = 1.5, colour = "#c94a38"))+
+    theme(plot.title = element_text(hjust = 0.5, colour = "brown", face = "bold"))+
+    theme(axis.text.x = element_text(face = "bold", size=8, angle=60, color="black"))+
+    theme(legend.position = "right", legend.direction = "verticle")+
+    geom_text(aes(label = Mean_days),vjust = -0.25, size = 3)+
+    labs(title = "Distribution of Timely full loan Repayment days per Product\n (Days = Average TRP days per product)", x = "Products", y = "TRP days(mean)")
+
+distribution
+```
+
+**6.Historical demand and repayment behavior**
+
+**Question:** Which product would you push, and why?
+To better understand all products' repayment behavior, the percentage of each product loan status was analyzed.For instance, if a loan product has a high rate of arrears and write-offs (Overdue and written off status) and a very low percentage of closed loans, this should be considered ‘bad’ or poorly performing. Hence, a call for better collection strategies, the right customers' target for the product or even seasonal consideration and, geographic distribution.
+
+```{r,eval=F, echo=T}
+Demand <- data %>% 
+    group_by(Product,Status) %>% 
+    summarise(count = n()/20)
+  
+  Demand_plot <- group_by(Demand, Product) %>% 
+    mutate(Percentage = (count/sum(count))*100)
+  
+  Demand_plot[,4] <- round(Demand_plot[,4], digits = 1)
+  
+  Demand_plot_plotII <- Demand_plot %>% 
+    group_by(Product) %>% 
+    arrange(Product, desc(Status)) %>% 
+    mutate(lab_ypos = cumsum(Percentage)- 0.5 * Percentage)
+  options(scipen = 999)
+  
+  #display top rows and columns
+head(Demand_plot_plotII)
+```
+
+
+```{r include=FALSE}
+#Actual code run
+Demand <- data %>% 
+    group_by(Product,Status) %>% 
+    summarise(count = n()/20)
+  
+  Demand_plot <- group_by(Demand, Product) %>% 
+    mutate(Percentage = (count/sum(count))*100)
+  
+  Demand_plot[,4] <- round(Demand_plot[,4], digits = 1)
+  
+  Demand_plot_plotII <- Demand_plot %>% 
+    group_by(Product) %>% 
+    arrange(Product, desc(Status)) %>% 
+    mutate(lab_ypos = cumsum(Percentage)- 0.5 * Percentage)
+  options(scipen = 999)
+```
+
+```{r echo=FALSE}
+head(Demand_plot_plotII)
+```
+
+The graph below shows a combination of demand and product performance. The maroon line graph shows how the product was demanded, and the scale was reduced by 20 units(n/20). LPG2, LPG3, and BORA were highly demanded consecutively.
+```{r echo=FALSE}
+ demand <- ggplot(Demand_plot_plotII, aes(fill=Status, y= Percentage, x= Product)) + 
+    geom_bar(position="stack", stat="identity")+
+    geom_line(aes(x = Product, y = count),stat = "identity",size = 1, color="maroon", group = 1)+
+    geom_text(aes(y = lab_ypos, label = paste0(Percentage,"%"), group =Status), color = "black", size =2.5)+
+    theme(panel.grid.minor.x=element_blank(),
+          panel.grid.major.x=element_blank()) +theme(panel.background = element_blank()) +
+    theme(panel.grid.major = element_line(colour = "light grey"))+
+    theme(axis.line.x = element_line(size = 1.5, colour = "#c94a38"))+
+    theme(plot.title = element_text(hjust = 0.5, colour = "dark green"))+
+    theme(axis.text.x = element_text(face = "bold", size=8, angle=60, color="black"))+
+    theme(legend.position = "top", legend.direction = "horizontal")+
+    labs(title = "Products demand and Percentage loan status\n (Maroon line = Products demand)~ scale factor:n/20", x = "Products", y = "Percentage Loan Status (%)")
+
+demand
+```
+
+**Things to note:** Given the above trends, the top 3 demanded products have great potential in terms of acquisition and repayments.  However, a lot of focus needs to be geared towards collecting the active loans for BORA product and reducing delinquent loans for LPG3 to less than 10%. Two products to keep an eye on in terms of collection and recovery instead of acquisition are HOME and TNK. These products have high delinquents and active loans compared to closed loans. The collection team should as well focus on reducing the non-performing loans for all product/ portfolio at risk (PAR) to less than 10%. Therefore, this calls for a review of collection strategies: SMS contents, time to send messages, and incentives.
+
+**7.Time series products demand**
+
+Analysis of product demand over time is essential to understand when the different products are demanded. Such might as well provide great insights to the marketing team. Disbursement date was used and converted
+to Month-Year.
+
+```{r, eval=F, echo=T}
+#create a product demand dataset
+ data$`Disbursed Date` <- as.Date(data$`Disbursed Date`, format = "%Y-%m-%d")
+  
+  Time_series <- data %>% 
+    group_by(Product, `Disbursed Date`) %>% 
+  summarise(count = n())
+  
+  
+  Time_series_plot <- Time_series %>% 
+    group_by(Product, Month) %>% 
+    mutate(Total = sum(count))
+  
+Time_series_plot$Month <- format(as.Date(Time_series_plot$`Disbursed Date`), "%b - %Y")
+
+```
+
+```{r}
+Time_series_plot <- read_excel("demand.xlsx")
+```
+
+```{r}
+Time_series_plot$Month <- factor(Time_series_plot$Month, 
+                    levels = c("Jan - 2019", "Feb - 2019", "Mar - 2019", "Apr - 2019", "May - 2019", "Jun - 2019",
+                                  "Jul - 2019", "Aug - 2019", "Sep - 2019", "Oct - 2019", "Nov - 2019","Dec - 2019",
+                                       "Jan - 2020", "Feb - 2020", "Mar - 2020"))
+```
+
+
+```{r echo=FALSE}
+ggplot(Time_series_plot, aes(x= Month, y=Total, group=Product)) +
+  geom_line(aes(color=Product))+
+  geom_point(aes(color=Product))+ ylab("Total Product demanded")+
+  xlab("Month-Year")+theme(axis.text.x = element_text( size=8, angle=60, color="black"))+
+  ggtitle("Time series analysis for Products demanded")+
+  theme(plot.title = element_text( colour = "dark green"))+
+  scale_y_continuous(labels = label_comma(big.mark = ","))+
+  theme(legend.position="right")+
+  theme(axis.line.x = element_line(size = 1.5, colour = "#c94a38"))+
+  theme(plot.title = element_text(hjust = 0.5, colour = "dark green"))+
+  theme(axis.text.x = element_text(face = "bold", size=8, angle=60, color="black"))
+
+```
+
+There has been a shift in demand for different products over time from the above general time series trends.  For instance, LPG2, BORA, and CNVS were highly demanded in February and March 2020. There was a low demand shift for products between October 2019 and January 2020.
+
+**7.1.Time series analysis for Top products**
+
+After filtering the top products,there was a peak demand for CNVS between August 2019 and December 2019. The need for JIKO has been relatively constant across the analysis period.
+
+```{r include=FALSE}
+#Actual code run
+Time_series_tp <- Time_series_plot %>% 
+  filter(Product == "LPG2" | Product == "LPG3" | Product == "BORA" | Product =="CNVS" | Product == "JIKO" | Product == "P400")
+  
+Time_series_tp
+```
+
+
+
+```{r echo=FALSE}
+Time_series_tp$Month <- factor(Time_series_tp$Month, 
+                    levels = c("Jan - 2019", "Feb - 2019", "Mar - 2019", "Apr - 2019", "May - 2019", "Jun - 2019",
+                                      "Jul - 2019", "Aug - 2019", "Sep - 2019", "Oct - 2019", "Nov - 2019","Dec - 2019",
+                                       "Jan - 2020", "Feb - 2020", "Mar - 2020"))
+```
+
+
+```{r echo=FALSE}
+ggplot(Time_series_tp, aes(x= Month, y=Total, group=Product)) +
+  geom_line(aes(color=Product))+
+  geom_point(aes(color=Product))+ ylab("Total Product demanded")+
+  xlab("Month-Year")+theme(axis.text.x = element_text( size=8, angle=60, color="black"))+
+  ggtitle("Time series analysis for Top Products demanded per Month")+
+  theme(plot.title = element_text( colour = "dark green"))+
+  scale_y_continuous(labels = label_comma(big.mark = ","))+
+  theme(legend.position="top")+
+  theme(axis.line.x = element_line(size = 1.5, colour = "#c94a38"))+
+  theme(plot.title = element_text(hjust = 0.5, colour = "dark green"))+
+  theme(axis.text.x = element_text(face = "bold", size=8, angle=60, color="black"))
+```
+
+**8.Daily loans repayment analysis**
+
+The Final repayment date was used to analyze for the repayment days. This analysis shows progressive loan repayments with days of the week. However, the difference in not much dispersed. Low repayments were observed over the weekend. Knowledge of repayment days will be very crucial when it comes to collection. 
+
+Shifting collection to the most likely repaying days will ensure proper resource allocation in terms of the number of messages to send in a week or number of customers to be contacted. Better still, if the repayments are low over the weekend, what strategies need to be put in place if the collection team is not working over the weekend? Curate and schedule specific repayment reminder messages on Friday evening?
+
+```{r, eval=F, echo=T}
+#Generate weeks data
+Week <- data %>% 
+  group_by(Product, `Final Payment Date`) %>% 
+  summarise(count = n())
+ Week$`Final Payment Date` <-  as.Date(Week$`Final Payment Date`, format = "%Y-%m-%d")
+ 
+ #change date into days of the week
+ Week$day <- format(as.Date(Week$`Final Payment Date`), "%A")
+ 
+ Week_plot <- group_by(Week, day) %>% 
+   mutate(Total = sum(count))
+   
+ 
+Week_plot <- Week %>%
+     group_by(day) %>% 
+     summarise(sum(count))
+
+Week_plot <- Week_plot[-c(8), ]
+
+names(Week_plot) <- c("Day", "Total_Repayment")
+
+Week_plot$Day <- factor(Week_plot$Day, 
+                        levels = c("Monday", "Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday"))
+```
+
+```{r include=FALSE}
+#Actual code run
+Week <- data %>% 
+  group_by(Product, `Final Payment Date`) %>% 
+  summarise(count = n())
+ Week$`Final Payment Date` <-  as.Date(Week$`Final Payment Date`, format = "%Y-%m-%d")
+ 
+  Week$day <- format(as.Date(Week$`Final Payment Date`), "%A")
+  
+Week
+```
+
+```{r include=FALSE}
+#Actual code run
+Week_plot <- Week %>%
+     group_by(day) %>% 
+     summarise(sum(count))
+
+Week_plot <- Week_plot[-c(8), ]
+
+names(Week_plot) <- c("Day", "Total_Repayment")
+
+Week_plot$Day <- factor(Week_plot$Day, 
+                        levels = c("Monday", "Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday"))
+```
+
+```{r echo=FALSE}
+Week_graph <- ggplot(Week_plot, aes(Day, y = Total_Repayment)) + 
+  geom_bar(stat = "identity", position = "dodge", color='brown',fill='tan1', width = 0.5)+
+  theme(panel.grid.minor.x=element_blank(),
+        panel.grid.major.x=element_blank()) +theme(panel.background = element_blank()) +
+  theme(panel.grid.major = element_line(colour = "light grey"))+
+  theme(axis.line.x = element_line(size = 1.5, colour = "#c94a38"))+
+  theme(plot.title = element_text(hjust = 0.5, colour = "dark green"))+
+  theme(axis.text.x = element_text(face = "bold", size=8, angle=0, color="black"))+
+  geom_text(aes(label = Total_Repayment),vjust = -0.25, size = 3)+
+  labs(title = "Total daily repayments", x = "Days", y = "Repayments")+
+  scale_y_continuous(labels = label_comma(big.mark = ","))
+
+Week_graph
+```
+

@@ -1,0 +1,32 @@
+---
+title: Spatial modeling and Interpolation
+author: Benjamin Mwasambo
+date: '2020-09-02'
+slug: spatial-modeling-and-interpolation
+categories:
+  - GIS
+tags:
+  - R
+  - Geostatistics
+  - GIS
+summary: A spatial variogram model of spatially known soil properties variables points and prediction of unknown points/locations using kriging interpolation. 
+authors: [Benjamin Mwasambo]
+external_link: ''
+image:
+  caption: ''
+  focal_point: ''
+  preview_only: no
+url_code: ''
+url_pdf: ''
+url_slides: ''
+url_video: ''
+slides: ''
+
+links:
+- icon: twitter
+  icon_pack: fab
+  name: Follow
+  url: https://twitter.com/Benmwasambo
+  
+---
+Currently working on prediction output map. Results to be displayed soon. 
