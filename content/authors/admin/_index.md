@@ -38,7 +38,7 @@ title: Benjamin Mwasambo
 role: Data Scientist/Analyst
 ---
 
-I am a Data Scientist and Analyst in Nairobi, Kenya, with five years of experience in providing data-driven business solutions and product development support. I have a bachelor's in Forestry science and an on-going MSc in Geospatial Information Science and Remote sensing. My research aims to model the risk of geographic invasion and distribution of Bactrocera zonata in Eastern Africa based on current distribution of the pest in prelevance areas and assessment of availability of plant hosts, pest population availability and climatology suitability.
+I am a Data Scientist and Analyst in Nairobi, Kenya, with six years of experience in providing data-driven business solutions and product development support. I have a bachelor's in Forestry science and an on-going MSc in Geospatial Information Science and Remote sensing. My research aims to model the risk of geographic invasion and distribution of Bactrocera zonata in Eastern Africa based on current distribution of the pest in prelevance areas and assessment of availability of plant hosts, pest population availability and climatology suitability.
 
 I have a keen interest in using data to provide solutions at the intersection of environment, finance, and economic development. 
 
